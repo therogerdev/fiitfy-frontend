@@ -1,6 +1,6 @@
 import ProgramTabs from '@/components/Programs/ProgramTabs';
 import BreadcrumbComponent from '@/components/ui/BreadcrumbsComponent';
-import ContentLayout from '@/components/ui/content-layout';
+import ContentLayout from '@/components/layouts/content-layout';
 import { appLink } from '@/config/links';
 
 const breadcrumbLinks = [appLink.programs];

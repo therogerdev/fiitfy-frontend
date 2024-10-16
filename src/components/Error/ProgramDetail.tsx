@@ -31,7 +31,7 @@ import {
 import { ProgramDetailResponse } from '@/types/program';
 import { Copy, Pencil, Trash2 } from 'lucide-react';
 import BreadcrumbComponent from '../ui/BreadcrumbsComponent';
-import ContentLayout from '../ui/content-layout';
+import ContentLayout from '../layouts/content-layout';
 import { queryClient } from '@/config/queryClient';
 import Spinner from '../ui/spinner';
 
