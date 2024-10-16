@@ -33,6 +33,7 @@ import { Copy, Pencil, Trash2 } from 'lucide-react';
 import BreadcrumbComponent from '../ui/BreadcrumbsComponent';
 import ContentLayout from '../ui/content-layout';
 import { queryClient } from '@/config/queryClient';
+import Spinner from '../ui/spinner';
 
 const ProgramDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -62,7 +63,7 @@ const ProgramDetailPage = () => {
     },
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Spinner size='md' containerHeight={400} />;
   if (error) return <p>Error fetching program details.</p>;
 
   // Func copy ID to the clipboard

@@ -22,6 +22,7 @@ import {
 import { MoreHorizontal } from 'lucide-react';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import Spinner from '../ui/spinner';
 
 const ProgramsList = () => {
   const {
@@ -33,7 +34,7 @@ const ProgramsList = () => {
     queryFn: () => fetchAllPrograms(),
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Spinner size='md' containerHeight={400} />;
   if (error instanceof Error)
     return <div>Error: {error.message}</div>;
 
