@@ -9,10 +9,11 @@ import ProgramsPage from './pages/ProgramsPage';
 
 // Import appLink from your links.ts
 import { appLink } from './config/links';
+import Spinner from './components/ui/spinner';
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<div>loading....</div>}>
+    <Suspense fallback={<Spinner size='md' containerHeight={400} />}>
       <Routes>
         <Route path={appLink.dashboard.href} index element={<DashboardPage />} />
         <Route path='/' element={<Navigate to={appLink.dashboard.href} />} />
