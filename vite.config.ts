@@ -10,6 +10,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'), // Main alias for src
       '@components': path.resolve(__dirname, './src/components'), // Alias for components
       '@hooks': path.resolve(__dirname, './src/hooks'), // Alias for hooks
+      '@lib': path.resolve(__dirname, './src/lib'), // Alias for lib
+      '@ui': path.resolve(__dirname, './src/components/ui'), // Alias for UI components
     },
   },
 });

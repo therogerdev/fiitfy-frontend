@@ -3,27 +3,22 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { Provider as JotaiProvider } from 'jotai'; // Import Jotai Provider
-import './App.css';
-import Counter from './components/Counter';
-import ErrorBoundary from './components/Error/ErrorBoundary';
-import ProgramList from './components/Programs/ProgramList';
-import { Button } from './components/ui/button';
+import { BrowserRouter as Router } from 'react-router-dom';
 
+import './App.css';
+import ErrorBoundary from './components/Error/ErrorBoundary';
+import AppRoutes from './routes';
 // Create a client for React Query
 const queryClient = new QueryClient();
-
-
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
         <ErrorBoundary>
-          <div className='App'>
-            <Counter />
-            <ProgramList />
-            <Button>Click me</Button>
-          </div>
+          <Router>
+            <AppRoutes />
+          </Router>
         </ErrorBoundary>
       </JotaiProvider>
     </QueryClientProvider>
