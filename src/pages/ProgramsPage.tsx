@@ -1,9 +1,12 @@
-import ProgramList from "@/components/Programs/ProgramList"
+import ProgramList from '@/components/Programs/ProgramList';
+import ContentLayout from '@/components/ui/content-layout';
 
 const ProgramsPage = () => {
   return (
-    <ProgramList />
-  )
-}
+    <ContentLayout className='lg:py-4'>
+      <ProgramList />
+    </ContentLayout>
+  );
+};
 
-export default ProgramsPage
+export default ProgramsPage;

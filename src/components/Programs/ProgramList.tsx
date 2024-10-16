@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { EndpointType } from '../../types/api';
-import { Program, ProgramsResponse } from '@/types/Program';
 import { Link } from 'react-router-dom';
+import { ProgramsResponse, Program } from '@/types/Program';
 
 const ProgramList = () => {
   const {
@@ -26,17 +26,17 @@ const ProgramList = () => {
 
   return (
     <div>
-    <h1>Programs</h1>
-    <ul>
-      {programs?.data.map((program: Program) => (
-        <li key={program.id}>
-          <Link to={`/program/${program.attributes.slug}`}>
-            {program.attributes.name}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </div>
+      <h1>Programs</h1>
+      <ul>
+        {programs?.data.map((program: Program) => (
+          <li key={program.id}>
+            <Link to={`/program/${program.attributes.slug}`}>
+              {program.attributes.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
