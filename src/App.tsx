@@ -7,7 +7,7 @@ import './App.css';
 import Counter from './components/Counter';
 import ErrorBoundary from './components/Error/ErrorBoundary';
 import ProgramList from './components/Programs/ProgramList';
-import { Button } from './components/ui/button';
+import { Button } from '@ui/button';
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -19,7 +19,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
         <ErrorBoundary>
-          <div className='App'>
+          <div>
             <Counter />
             <ProgramList />
             <Button>Click me</Button>
