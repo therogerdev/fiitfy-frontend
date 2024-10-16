@@ -8,6 +8,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
 import ErrorBoundary from './components/Error/ErrorBoundary';
 import AppRoutes from './routes';
+import AppLayout from './components/ui/app-layout';
 // Create a client for React Query
 const queryClient = new QueryClient();
 
@@ -17,7 +18,9 @@ function App() {
       <JotaiProvider>
         <ErrorBoundary>
           <Router>
-            <AppRoutes />
+            <AppLayout>
+              <AppRoutes />
+            </AppLayout>
           </Router>
         </ErrorBoundary>
       </JotaiProvider>
