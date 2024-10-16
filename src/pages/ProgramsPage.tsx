@@ -1,10 +1,15 @@
-import ProgramList from '@/components/Programs/ProgramList';
+import ProgramTabs from '@/components/Programs/ProgramTabs';
+import BreadcrumbComponent from '@/components/ui/BreadcrumbsComponent';
 import ContentLayout from '@/components/ui/content-layout';
+import { appLink } from '@/config/links';
+
+const breadcrumbLinks = [appLink.programs];
 
 const ProgramsPage = () => {
   return (
-    <ContentLayout className='lg:py-4'>
-      <ProgramList />
+    <ContentLayout className=''>
+      <BreadcrumbComponent links={breadcrumbLinks} />
+      <ProgramTabs />
     </ContentLayout>
   );
 };
