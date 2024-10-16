@@ -1,5 +1,5 @@
 export const appLink = {
-  dashboard: { label: 'Dashboard', href: '/' },
+  dashboard: { label: 'Dashboard', href: '/dashboard' },
   programs: { label: 'Programs', href: '/programs' },
   programDetail: (slug: string, name: string) => ({
     label: name,
