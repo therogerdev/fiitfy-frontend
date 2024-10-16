@@ -1,13 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { EndpointType } from '../../types/types';
+import { EndpointType } from '../../types/api';
+import { Program, ProgramsResponse } from '@/types/Program';
+import { Link } from 'react-router-dom';
 
 const ProgramList = () => {
   const {
     isLoading,
     error,
     data: programs,
-  } = useQuery({
+  } = useQuery<ProgramsResponse>({
     queryKey: ['programs'],
     queryFn: () =>
       axios
@@ -22,7 +24,20 @@ const ProgramList = () => {
   if (isLoading) return <p>'Loading...'</p>;
   if (error) return <p>'An error has occurred: ' + error.message</p>;
 
-  return <div>{JSON.stringify(programs, null, 2)}</div>;
+  return (
+    <div>
+    <h1>Programs</h1>
+    <ul>
+      {programs?.data.map((program: Program) => (
+        <li key={program.id}>
+          <Link to={`/program/${program.attributes.slug}`}>
+            {program.attributes.name}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </div>
+  );
 };
 
 export default ProgramList;
