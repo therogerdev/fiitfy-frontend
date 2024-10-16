@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import './App.css';
 import ErrorBoundary from './components/Error/ErrorBoundary';
-import AppLayout from './components/ui/app-layout';
+import AppLayout from './components/layouts/app-layout';
 import { queryClient } from './config/queryClient';
 import AppRoutes from './routes';
 
