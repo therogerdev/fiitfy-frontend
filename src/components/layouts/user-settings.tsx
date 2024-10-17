@@ -10,15 +10,21 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { logout } from '@/services/auth'; // Import the logout function
 
 function UserSettings() {
+  const navigate = useNavigate(); // Get navigate function for redirection
+
+  const handleLogout = () => {
+    logout(); // Call logout function
+    navigate('/login'); // Redirect to the login page after logout
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          className='relative w-8 h-8 rounded-full'
-        >
+        <Button variant='ghost' className='relative w-8 h-8 rounded-full'>
           <Avatar className='w-8 h-8'>
             <AvatarImage src='/avatars/01.png' alt='@fitfy' />
             <AvatarFallback>SC</AvatarFallback>
@@ -51,7 +57,7 @@ function UserSettings() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleLogout}> {/* Handle Logout */}
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
