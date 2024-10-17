@@ -16,4 +16,5 @@ export const appLink = {
     href: `/program/${slug}/delete`,
   }),
   addProgram: () => ({ label: 'Add Program', href: `/program/new` }),
+  login: { label: 'Login', href: '/login' },
 };
