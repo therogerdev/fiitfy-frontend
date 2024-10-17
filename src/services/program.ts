@@ -10,7 +10,6 @@ export const fetchProgramDetail = async (slug: string) => {
   const response = await apiClient.get(
     `${EndpointType.Program}/${slug}`
   );
-
   return response.data;
 };
 
@@ -18,6 +17,5 @@ export const deleteProgram = async (id: string) => {
   const response = await apiClient.delete(
     `${EndpointType.Program}/${id}`
   );
-
   return response.data;
 };

@@ -10,7 +10,7 @@ import UserSettings from './user-settings';
 export default function AppLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <main className='flex w-screen h-screen'>
