@@ -1,13 +1,22 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { checkTokenValidity } from '@/lib/checkTokenValidity';
+import { Navigate } from 'react-router-dom';
 
-export function ProtectedRoute({ children }: { children: JSX.Element }) {
-  const location = useLocation();
-  const token = localStorage.getItem('token');
+export const ProtectedRoute = ({
+  children,
+}: {
+  children: JSX.Element;
+}) => {
+  const isValid = checkTokenValidity();
 
-  if (!token) {
-    // Pass only the pathname to avoid the cloning error
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  if (!isValid) {
+    return (
+      <Navigate
+        to='/login'
+        state={{ from: location.pathname }}
+        replace
+      />
+    );
   }
 
   return children;
-}
+};
