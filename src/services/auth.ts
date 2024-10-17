@@ -20,8 +20,12 @@ export const signupUser = async (email: string, password: string) => {
 };
 
 // Get user details
-export const getUserDetail = async () => {
-  const response = await apiClient.get(EndpointType.Me);
+export const getUserDetail = async (token: string) => {
+  const response = await apiClient.get(EndpointType.Me, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 export const logout = () => {

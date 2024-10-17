@@ -1,10 +1,14 @@
-
-
+import UserProfile from "@/auth/UserProfile";
 
 const DashboardPage = () => {
   return (
-    <div>DashboardPage</div>
-  )
-}
+    <div className='flex flex-col gap-y-10'>
+      <div className=''>DashboardPage</div>
+      <div className=''>
+        <UserProfile />
+      </div>
+    </div>
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;

@@ -16,6 +16,7 @@ import { appLink } from '@/config/links';
 import { loginUser } from '@/services/auth';
 import { useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { Eye, EyeOff } from 'lucide-react'; // Import Eye and EyeOff components
 
 export default function Login() {
   const { toast } = useToast();
@@ -30,10 +31,10 @@ export default function Login() {
     },
   });
   const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the 'from' state or default to dashboard
   const from = location.state?.from || '/dashboard';
 
   // mutation
@@ -49,23 +50,15 @@ export default function Login() {
       return response;
     },
     onSuccess: (response) => {
-      // Store the JWT in local storage
       localStorage.setItem('token', response.token);
-
-      // Show success toast
       toast({
         title: 'Login Successful',
         description: 'You have successfully logged in.',
       });
-
-      // Redirect to the original route or dashboard
       navigate(from);
     },
     onError: (error: Error) => {
-      // Set the login error message for form display
       setLoginError(`${error.message}`);
-
-      // Optionally, display the error with a toast
       toast({
         title: 'Login Failed',
         description: 'Invalid email or password.',
@@ -85,7 +78,7 @@ export default function Login() {
     <div className='overflow-hidden border shadow bg-background'>
       <div className='container relative flex-col items-center justify-center hidden h-screen md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
         <Link
-          to={appLink.dashboard.href} // Use the appLink for navigation
+          to={appLink.dashboard.href}
           className='absolute inline-flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors rounded-md right-4 top-4 md:right-8 md:top-8 whitespace-nowrap focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9'
         >
           {appLink.dashboard.label}
@@ -144,11 +137,25 @@ export default function Login() {
                     Forgot your password?
                   </Link>
                 </div>
-                <Input
-                  id='password'
-                  type='password'
-                  {...register('password', { required: true })}
-                />
+                <div className='relative'>
+                  <Input
+                    id='password'
+                    type={showPassword ? 'text' : 'password'} // Toggle input type
+                    {...register('password', { required: true })}
+                  />
+                  <button
+                    type='button'
+                    onClick={() => setShowPassword((prev) => !prev)} // Toggle visibility
+                    className='absolute transform -translate-y-1/2 right-2 top-1/2'
+                  >
+                    {showPassword ? (
+                      <EyeOff className='w-4 h-4' />
+                    ) : (
+                      <Eye className='w-4 h-4' />
+                    )}{' '}
+                    {/* Toggle icon */}
+                  </button>
+                </div>
                 {errors.password && (
                   <span className='text-red-600'>
                     Password is required

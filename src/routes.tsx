@@ -11,7 +11,7 @@ import ProgramsPage from './pages/ProgramsPage';
 import { appLink } from './config/links';
 import Spinner from './components/ui/spinner';
 import Login from './pages/LoginPage';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { ProtectedRoute } from './auth/ProtectedRoute';
 
 const AppRoutes = () => {
   return (
