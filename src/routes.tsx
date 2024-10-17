@@ -11,38 +11,61 @@ import ProgramsPage from './pages/ProgramsPage';
 import { appLink } from './config/links';
 import Spinner from './components/ui/spinner';
 import Login from './pages/LoginPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<Spinner size='md' containerHeight={400} />}>
+    <Suspense fallback={<Spinner size="md" containerHeight={400} />}>
       <Routes>
+        {/* Protected Routes */}
         <Route
           path={appLink.dashboard.href}
-          index
-          element={<DashboardPage />}
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
         />
         <Route
-          path='/'
+          path="/"
           element={<Navigate to={appLink.dashboard.href} />}
         />
         <Route
           path={appLink.programs.href}
-          element={<ProgramsPage />}
+          element={
+            <ProtectedRoute>
+              <ProgramsPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path={appLink.programDetail(':slug', '').href}
-          element={<ProgramDetail />}
+          element={
+            <ProtectedRoute>
+              <ProgramDetail />
+            </ProtectedRoute>
+          }
         />
         <Route
           path={appLink.addProgram().href}
-          element={<ProgramCreate />}
+          element={
+            <ProtectedRoute>
+              <ProgramCreate />
+            </ProtectedRoute>
+          }
         />
         <Route
           path={appLink.programEdit(':slug').href}
-          element={<ProgramEdit />}
+          element={
+            <ProtectedRoute>
+              <ProgramEdit />
+            </ProtectedRoute>
+          }
         />
+
+        {/* Public Routes */}
         <Route path={appLink.login.href} element={<Login />} />
-        <Route path='*' element={<div>404 Not Found</div>} />
+        <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </Suspense>
   );

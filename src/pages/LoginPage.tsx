@@ -1,3 +1,6 @@
+import { useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -10,8 +13,74 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { appLink } from '@/config/links';
+import { loginUser } from '@/services/auth';
+import { useMutation } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Login() {
+  const { toast } = useToast();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+  const [loginError, setLoginError] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the 'from' state or default to dashboard
+  const from = location.state?.from || '/dashboard';
+
+  // mutation
+  const { mutate } = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      const response = await loginUser(email, password);
+      return response;
+    },
+    onSuccess: (response) => {
+      // Store the JWT in local storage
+      localStorage.setItem('token', response.token);
+
+      // Show success toast
+      toast({
+        title: 'Login Successful',
+        description: 'You have successfully logged in.',
+      });
+
+      // Redirect to the original route or dashboard
+      navigate(from);
+    },
+    onError: (error: Error) => {
+      // Set the login error message for form display
+      setLoginError(`${error.message}`);
+
+      // Optionally, display the error with a toast
+      toast({
+        title: 'Login Failed',
+        description: 'Invalid email or password.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const onSubmit = (data: { email: string; password: string }) => {
+    mutate({
+      email: data.email,
+      password: data.password,
+    });
+  };
+
   return (
     <div className='overflow-hidden border shadow bg-background'>
       <div className='container relative flex-col items-center justify-center hidden h-screen md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
@@ -47,15 +116,23 @@ export default function Login() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className='grid gap-4'>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className='grid gap-4'
+            >
               <div className='grid gap-2'>
                 <Label htmlFor='email'>Email</Label>
                 <Input
                   id='email'
                   type='email'
                   placeholder='m@example.com'
-                  required
+                  {...register('email', { required: true })}
                 />
+                {errors.email && (
+                  <span className='text-red-600'>
+                    Email is required
+                  </span>
+                )}
               </div>
               <div className='grid gap-2'>
                 <div className='flex items-center'>
@@ -67,15 +144,27 @@ export default function Login() {
                     Forgot your password?
                   </Link>
                 </div>
-                <Input id='password' type='password' required />
+                <Input
+                  id='password'
+                  type='password'
+                  {...register('password', { required: true })}
+                />
+                {errors.password && (
+                  <span className='text-red-600'>
+                    Password is required
+                  </span>
+                )}
               </div>
+              {loginError && (
+                <span className='text-red-600'>{loginError}</span>
+              )}
               <Button type='submit' className='w-full'>
                 Login
               </Button>
               <Button variant='outline' className='w-full'>
                 Login with Google
               </Button>
-            </div>
+            </form>
             <div className='mt-4 text-sm text-center'>
               Don&apos;t have an account?{' '}
               <Link to='#' className='underline'>
