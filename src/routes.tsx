@@ -8,14 +8,15 @@ import DashboardPage from './pages/DashboardPage';
 import ProgramsPage from './pages/ProgramsPage';
 
 // Import appLink from your links.ts
-import { appLink } from './config/links';
-import Spinner from './components/ui/spinner';
-import Login from './pages/LoginPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
+import Spinner from './components/ui/spinner';
+import { appLink } from './config/links';
+import Login from './pages/LoginPage';
+import RecoverPasswordPage from './pages/RecoverPasswordPage';
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<Spinner size="md" containerHeight={400} />}>
+    <Suspense fallback={<Spinner size='md' containerHeight={400} />}>
       <Routes>
         {/* Protected Routes */}
         <Route
@@ -27,9 +28,10 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/"
+          path='/'
           element={<Navigate to={appLink.dashboard.href} />}
         />
+
         <Route
           path={appLink.programs.href}
           element={
@@ -65,7 +67,8 @@ const AppRoutes = () => {
 
         {/* Public Routes */}
         <Route path={appLink.login.href} element={<Login />} />
-        <Route path="*" element={<div>404 Not Found</div>} />
+        <Route path='*' element={<div>404 Not Found</div>} />
+        <Route path={appLink.forgotPassword.href} element={<RecoverPasswordPage />} />
       </Routes>
     </Suspense>
   );

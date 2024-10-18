@@ -14,7 +14,7 @@ function AppWrapper() {
   const location = useLocation();
 
   // Check if the current route is either /login or /settings
-  const isAuthRoute = location.pathname === '/login' || location.pathname === '/settings';
+  const isAuthRoute = location.pathname === '/login' || location.pathname === '/settings' || location.pathname === '/recover-password';
 
   return (
     <>
