@@ -1,9 +1,16 @@
-"use client"
+'use client';
 import { Button } from '@/components/ui/button';
 import { File, ListFilter, PlusCircle } from 'lucide-react';
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router';
-
+import { appLink } from '@/config/links';
 
 const ProgramActions = () => {
   const navigate = useNavigate();
@@ -18,7 +25,7 @@ const ProgramActions = () => {
         </span>
       </Button>
       <Button
-        onClick={() => navigate('/program/add')}
+        onClick={() => navigate(appLink.createPrograms.href)}
         size='sm'
         className='gap-1 h-7'
       >
@@ -34,19 +41,23 @@ const ProgramActions = () => {
 export default ProgramActions;
 
 const FilterMenu = () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-1 h-7">
-          <ListFilter className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Filter</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem checked>Active</DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant='outline' size='sm' className='gap-1 h-7'>
+        <ListFilter className='h-3.5 w-3.5' />
+        <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
+          Filter
+        </span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align='end'>
+      <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuCheckboxItem checked>
+        Active
+      </DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+);
