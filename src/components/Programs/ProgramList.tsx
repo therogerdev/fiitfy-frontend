@@ -65,7 +65,10 @@ const ProgramsList = () => {
           <Fragment key={program.id}>
             <TableRow>
               <TableCell className='hidden sm:table-cell'>
-                <Link to={`/program/${program.attributes.slug}`}>
+                {/* <Link to={`/program/${program.attributes.slug}`}> */}
+                <Link
+                  to={`/programs?quickview=${program.attributes.slug} `}
+                >
                   <Avatar>
                     <AvatarImage />
                     <AvatarFallback>HT</AvatarFallback>

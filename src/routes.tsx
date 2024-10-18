@@ -1,7 +1,6 @@
 // src/routes.tsx
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import ProgramDetail from './components/Error/ProgramDetail';
 import ProgramCreate from './components/Programs/ProgramCreate';
 import ProgramEdit from './components/Programs/ProgramEdit';
 import DashboardPage from './pages/DashboardPage';
@@ -13,6 +12,7 @@ import Spinner from './components/ui/spinner';
 import { appLink } from './config/links';
 import Login from './pages/LoginPage';
 import RecoverPasswordPage from './pages/RecoverPasswordPage';
+import ProgramDetailPage from './pages/ProgramDetailPage';
 
 const AppRoutes = () => {
   return (
@@ -39,23 +39,22 @@ const AppRoutes = () => {
               <ProgramsPage />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route
+            path={appLink.createPrograms.href}
+            element={<ProgramCreate />}
+          />
+
+        </Route>
         <Route
           path={appLink.programDetail(':slug', '').href}
           element={
             <ProtectedRoute>
-              <ProgramDetail />
+              <ProgramDetailPage />
             </ProtectedRoute>
           }
         />
-        <Route
-          path={appLink.addProgram().href}
-          element={
-            <ProtectedRoute>
-              <ProgramCreate />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path={appLink.programEdit(':slug').href}
           element={
@@ -68,7 +67,10 @@ const AppRoutes = () => {
         {/* Public Routes */}
         <Route path={appLink.login.href} element={<Login />} />
         <Route path='*' element={<div>404 Not Found</div>} />
-        <Route path={appLink.forgotPassword.href} element={<RecoverPasswordPage />} />
+        <Route
+          path={appLink.forgotPassword.href}
+          element={<RecoverPasswordPage />}
+        />
       </Routes>
     </Suspense>
   );
