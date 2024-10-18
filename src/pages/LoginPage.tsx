@@ -1,24 +1,24 @@
-import { useForm } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import AuthLayout from '@/components/layouts/auth-layout';
+import { Button } from '@/components/ui/button';
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { appLink } from '@/config/links';
-import { loginUser } from '@/services/auth';
-import { useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff } from 'lucide-react'; // Import Eye and EyeOff components
+import { getUserDetail, loginUser } from '@/services/auth';
+import { User } from '@/types/user';
+import { useMutation } from '@tanstack/react-query';
+import { Eye, EyeOff } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-export default function Login() {
+export default function LoginPage() {
   const { toast } = useToast();
   const {
     register,
@@ -31,13 +31,25 @@ export default function Login() {
     },
   });
   const [loginError, setLoginError] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [user, setUser] = useState<User | null>(null); // State to hold user data
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from || '/dashboard';
 
-  // mutation
+  // Check if the user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const fetchUserDetails = async () => {
+        const userDetails = await getUserDetail(token); // Assume getUserDetail fetches user data
+        setUser(userDetails);
+      };
+      fetchUserDetails();
+    }
+  }, []);
+
   const { mutate } = useMutation({
     mutationFn: async ({
       email,
@@ -74,41 +86,43 @@ export default function Login() {
     });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Clear the token
+    setUser(null); // Clear the user state
+    navigate('/login'); // Navigate to login page
+  };
+
   return (
-    <div className='overflow-hidden border shadow bg-background'>
-      <div className='container relative flex-col items-center justify-center hidden h-screen md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
-        <Link
-          to={appLink.dashboard.href}
-          className='absolute inline-flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors rounded-md right-4 top-4 md:right-8 md:top-8 whitespace-nowrap focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9'
-        >
-          {appLink.dashboard.label}
-        </Link>
-        <div className='relative flex-col hidden h-full p-10 text-white bg-muted dark:border-r lg:flex'>
-          <div className='absolute inset-0 bg-zinc-900' />
-          <div className='relative z-20 flex items-center text-lg font-medium'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth={2}
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              className='w-6 h-6 mr-2'
-            >
-              <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
-            </svg>
-            FitFy App
-          </div>
-        </div>
-        <Card className='max-w-sm mx-auto'>
-          <CardHeader>
-            <CardTitle className='text-2xl'>Login</CardTitle>
+    <AuthLayout user={user}>
+      <Card>
+        <CardHeader>
+          <CardTitle className='text-2xl'>
+            {user ? `Logged as: ${user.username}` : 'Login'}
+          </CardTitle>
+          {user && (
+            <div className='flex mt-2'>
+              <p className='mx-2 text-sm'>Not you?</p>
+              <Link
+                to='#'
+                onClick={handleLogout}
+                className='text-sm text-blue-500 underline'
+              >
+                Logout
+              </Link>
+            </div>
+          )}
+          {user ? (
+            <CardDescription>
+              If it's not you log out then enter your credentials
+            </CardDescription>
+          ) : (
             <CardDescription>
               Enter your email below to login to your account
             </CardDescription>
-          </CardHeader>
-          <CardContent>
+          )}
+        </CardHeader>
+        <CardContent>
+          {!user ? (
             <form
               onSubmit={handleSubmit(onSubmit)}
               className='grid gap-4'
@@ -131,7 +145,7 @@ export default function Login() {
                 <div className='flex items-center'>
                   <Label htmlFor='password'>Password</Label>
                   <Link
-                    to='#'
+                    to='/recover-password'
                     className='inline-block ml-auto text-sm underline'
                   >
                     Forgot your password?
@@ -140,20 +154,19 @@ export default function Login() {
                 <div className='relative'>
                   <Input
                     id='password'
-                    type={showPassword ? 'text' : 'password'} // Toggle input type
+                    type={showPassword ? 'text' : 'password'}
                     {...register('password', { required: true })}
                   />
                   <button
                     type='button'
-                    onClick={() => setShowPassword((prev) => !prev)} // Toggle visibility
+                    onClick={() => setShowPassword((prev) => !prev)}
                     className='absolute transform -translate-y-1/2 right-2 top-1/2'
                   >
                     {showPassword ? (
                       <EyeOff className='w-4 h-4' />
                     ) : (
                       <Eye className='w-4 h-4' />
-                    )}{' '}
-                    {/* Toggle icon */}
+                    )}
                   </button>
                 </div>
                 {errors.password && (
@@ -168,19 +181,23 @@ export default function Login() {
               <Button type='submit' className='w-full'>
                 Login
               </Button>
-              <Button variant='outline' className='w-full'>
-                Login with Google
-              </Button>
             </form>
+          ) : (
+            <div className='mt-4 text-sm text-center'>
+              You are logged in as{' '}
+              {`${user.athlete?.firstName} ${user.athlete?.lastName}`}
+            </div>
+          )}
+          {!user && (
             <div className='mt-4 text-sm text-center'>
               Don&apos;t have an account?{' '}
               <Link to='#' className='underline'>
                 Sign up
               </Link>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          )}
+        </CardContent>
+      </Card>
+    </AuthLayout>
   );
 }

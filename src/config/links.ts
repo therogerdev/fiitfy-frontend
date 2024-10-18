@@ -3,6 +3,10 @@ export const appLink = {
   programs: { label: 'Programs', href: '/programs' },
   members: { label: 'Members', href: '/members' },
   classes: { label: 'Classes', href: '/classes' },
+  forgotPassword: {
+    label: 'Forgot Password?',
+    href: '/recover-password',
+  },
   programDetail: (slug: string, name: string) => ({
     label: name,
     href: `/program/${slug}`,
