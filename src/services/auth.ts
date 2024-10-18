@@ -28,6 +28,26 @@ export const getUserDetail = async (token: string) => {
   });
   return response.data;
 };
-export const logout = () => {
-  localStorage.removeItem('token');
+
+
+export const logoutRequest = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found');
+    }
+
+    const response = await apiClient.post(EndpointType.Logout, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    localStorage.removeItem('token');
+
+    return response.data
+  } catch (error) {
+    console.error('Error during logout:', error);
+    throw new Error('Failed to logout. Please try again');
+  }
 };

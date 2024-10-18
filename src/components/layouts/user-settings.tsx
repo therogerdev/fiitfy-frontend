@@ -1,4 +1,10 @@
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { logoutRequest } from '@/services/auth';
+import { logoutAtom } from '@/store/user';
+import { useMutation } from '@tanstack/react-query';
+import { useSetAtom } from 'jotai';
+import { useNavigate } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
   DropdownMenu,
@@ -10,13 +16,21 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
-import { logout } from '@/services/auth'; // Import the logout function
-import { useAuth } from '@/hooks/useAuth';
 
 function UserSettings() {
-  const navigate = useNavigate(); // Get navigate function for redirection
   const { user, loading } = useAuth();
+  const setLogout = useSetAtom(logoutAtom);
+  const navigate = useNavigate();
+
+  const { mutate } = useMutation({
+    mutationFn: () => logoutRequest(),
+    onSuccess: (data) => {
+      if (data.logout) {
+        setLogout();
+        navigate('/login');
+      }
+    },
+  });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -25,11 +39,6 @@ function UserSettings() {
   if (!user) {
     return <div>No user found. Please log in.</div>;
   }
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login'); // Redirect to the login page after logout
-  };
 
   const getInitials = (firstName: string, lastName: string) => {
     const firstInitial = firstName ? firstName[0] : '';
@@ -83,9 +92,7 @@ function UserSettings() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={handleLogout}>
-          {' '}
-          {/* Handle Logout */}
+        <DropdownMenuItem onSelect={() => mutate()}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
