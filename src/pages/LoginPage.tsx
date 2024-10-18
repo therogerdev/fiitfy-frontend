@@ -1,18 +1,19 @@
 import AuthLayout from '@/components/layouts/auth-layout';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { getUserDetail, loginUser } from '@/services/auth';
-import { User } from '@/types/user';
+import { getUserDetail, loginUser, logoutRequest } from '@/services/auth';
+import { logoutAtom, userAtom } from '@/store/user';
 import { useMutation } from '@tanstack/react-query';
+import { useAtom, useSetAtom } from 'jotai';
 import { Eye, EyeOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -32,9 +33,10 @@ export default function LoginPage() {
   });
   const [loginError, setLoginError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [user, setUser] = useState<User | null>(null); // State to hold user data
+  const [user, setUser] = useAtom(userAtom);
   const navigate = useNavigate();
   const location = useLocation();
+  const setLogout = useSetAtom(logoutAtom);
 
   const from = location.state?.from || '/dashboard';
 
@@ -43,7 +45,7 @@ export default function LoginPage() {
     const token = localStorage.getItem('token');
     if (token) {
       const fetchUserDetails = async () => {
-        const userDetails = await getUserDetail(token); // Assume getUserDetail fetches user data
+        const userDetails = await getUserDetail(token);
         setUser(userDetails);
       };
       fetchUserDetails();
@@ -63,6 +65,7 @@ export default function LoginPage() {
     },
     onSuccess: (response) => {
       localStorage.setItem('token', response.token);
+
       toast({
         title: 'Login Successful',
         description: 'You have successfully logged in.',
@@ -86,11 +89,15 @@ export default function LoginPage() {
     });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the token
-    setUser(null); // Clear the user state
-    navigate('/login'); // Navigate to login page
-  };
+  const { mutate:handleLogout } = useMutation({
+    mutationFn: () => logoutRequest(),
+    onSuccess: (data) => {
+      if (data.logout) {
+        setLogout();
+        navigate('/login');
+      }
+    },
+  });
 
   return (
     <AuthLayout user={user}>
@@ -104,7 +111,7 @@ export default function LoginPage() {
               <p className='mx-2 text-sm'>Not you?</p>
               <Link
                 to='#'
-                onClick={handleLogout}
+                onClick={() => handleLogout()}
                 className='text-sm text-blue-500 underline'
               >
                 Logout
@@ -134,6 +141,7 @@ export default function LoginPage() {
                   type='email'
                   placeholder='m@example.com'
                   {...register('email', { required: true })}
+                  autoComplete='email'
                 />
                 {errors.email && (
                   <span className='text-red-600'>
@@ -156,6 +164,7 @@ export default function LoginPage() {
                     id='password'
                     type={showPassword ? 'text' : 'password'}
                     {...register('password', { required: true })}
+                    autoComplete='current-password'
                   />
                   <button
                     type='button'

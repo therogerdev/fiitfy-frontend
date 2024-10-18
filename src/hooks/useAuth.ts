@@ -1,16 +1,17 @@
 import { getUserDetail } from '@/services/auth';
-import { User } from '@/types/user';
+import { userAtom } from '@/store/user';
+import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current location
+  const location = useLocation();
 
   useEffect(() => {
-    const publicRoutes = ['/login', '/recover-password']; // Move it here
+    const publicRoutes = ['/login', '/recover-password'];
 
     const fetchUserDetail = async () => {
       try {
