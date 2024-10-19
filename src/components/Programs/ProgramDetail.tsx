@@ -1,23 +1,12 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   useLocation,
   useNavigate,
   useParams,
 } from 'react-router-dom';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -27,12 +16,9 @@ import {
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { appLink } from '@/config/links';
-import { queryClient } from '@/config/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import {
-  deleteProgram,
-  fetchProgramDetail,
-} from '@/services/program';
+import { useDeleteProgramMutation } from '@/hooks/useDeleteProgramMutation';
+import { fetchProgramDetail } from '@/services/program';
 import { isQuickViewAtom } from '@/store/programs';
 import { ProgramDetailResponse } from '@/types/program';
 import { useAtom } from 'jotai';
@@ -40,10 +26,10 @@ import {
   Copy,
   EyeIcon,
   ListIcon,
-  Pencil,
-  Trash2,
+  Pencil
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import DeleteAlertDialog from '../DeleteAlertDialog';
 import Spinner from '../ui/spinner';
 
 const ProgramDetail = () => {
@@ -55,6 +41,8 @@ const ProgramDetail = () => {
     slug || null
   );
   const { toast } = useToast();
+  const { mutate, isLoading: isDeleting } =
+    useDeleteProgramMutation();
 
   // Set slug parameter based on search params
   useEffect(() => {
@@ -77,19 +65,6 @@ const ProgramDetail = () => {
     queryKey: ['program', slugParameter],
     queryFn: () => fetchProgramDetail(slugParameter as string),
     enabled: !!slugParameter,
-  });
-
-  const { mutate } = useMutation({
-    mutationFn: (id: string) => deleteProgram(id),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['programs'] });
-      toast({
-        variant: 'destructive',
-        title: data.message,
-        description: `${program?.data.attributes.name} has been deleted.`,
-      });
-      navigate('/programs');
-    },
   });
 
   if (isLoading) return <Spinner size='md' containerHeight={400} />;
@@ -183,43 +158,11 @@ const ProgramDetail = () => {
                 Edit Program
               </span>
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  size='sm'
-                  variant='destructive'
-                  className='h-8 gap-1'
-                >
-                  <Trash2 className='h-3.5 w-3.5' />
-                  <span className='lg:sr-only xl:not-sr-only xl:whitespace-nowrap'>
-                    Delete
-                  </span>
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Are you absolutely sure?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will
-                    permanently delete the program and remove your
-                    data from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    className={buttonVariants({
-                      variant: 'destructive',
-                    })}
-                    onClick={() => mutate(program?.data.id || '')}
-                  >
-                    Yes, Delete it
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <DeleteAlertDialog
+              entityName='Program'
+              onConfirmDelete={() => mutate(program?.data.id || '')}
+              isDeleting={isDeleting}
+            />
           </div>
         </CardHeader>
         <CardContent className='p-6 text-sm'>

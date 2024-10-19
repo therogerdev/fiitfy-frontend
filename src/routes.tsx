@@ -1,18 +1,18 @@
 // src/routes.tsx
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import ProgramCreate from './components/Programs/ProgramCreate';
 import ProgramEdit from './components/Programs/ProgramEdit';
 import DashboardPage from './pages/DashboardPage';
 import ProgramsPage from './pages/ProgramsPage';
 
 // Import appLink from your links.ts
 import { ProtectedRoute } from './auth/ProtectedRoute';
+import ProgramAdd from './components/Programs/ProgramCreate';
 import Spinner from './components/ui/spinner';
 import { appLink } from './config/links';
 import Login from './pages/LoginPage';
-import RecoverPasswordPage from './pages/RecoverPasswordPage';
 import ProgramDetailPage from './pages/ProgramDetailPage';
+import RecoverPasswordPage from './pages/RecoverPasswordPage';
 
 const AppRoutes = () => {
   return (
@@ -42,7 +42,7 @@ const AppRoutes = () => {
         >
           <Route
             path={appLink.createPrograms.href}
-            element={<ProgramCreate />}
+            element={<ProgramAdd />}
           />
 
         </Route>
