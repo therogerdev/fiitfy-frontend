@@ -2,6 +2,7 @@
 
 export enum EndpointType {
   Program = 'program',
+  CreateProgram = 'program/create',
   AllProgram = 'programs',
   Athlete = 'athlete',
   AllAthletes = 'athletes',
