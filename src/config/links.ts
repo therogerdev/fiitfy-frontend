@@ -2,7 +2,6 @@ export const appLink = {
   dashboard: { label: 'Dashboard', href: '/dashboard' },
   programs: { label: 'Programs', href: '/programs' },
   createPrograms: { label: 'Create Program', href: '/programs/new' },
-  members: { label: 'Members', href: '/members' },
   classes: { label: 'Classes', href: '/classes' },
   forgotPassword: {
     label: 'Forgot Password?',
@@ -21,4 +20,11 @@ export const appLink = {
     href: `/program/${slug}/delete`,
   }),
   login: { label: 'Login', href: '/login' },
+
+  // Athletes
+  athletes: { label: 'Athletes', href: '/athletes' }, //athletes list for admin users
+  athlete: (id: string) => ({
+    label: 'Athlete Area',
+    href: `/athlete/${id}`,
+  }),
 };

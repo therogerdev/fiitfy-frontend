@@ -20,15 +20,15 @@ const Navbar = () => {
         {appLink.dashboard.label}
       </Link>
       <Link
-        to={appLink.members.href}
+        to={appLink.athlete("id").href}
         className={cn(
           'transition-colors hover:text-foreground/80',
-          pathname.startsWith(appLink.members.href)
+          pathname.startsWith(appLink.athlete("id").href)
             ? 'text-foreground'
             : 'text-foreground/60'
         )}
       >
-        {appLink.members.label}
+        {appLink.athlete("id").label}
       </Link>
       <Link
         to={appLink.classes.href}
