@@ -13,6 +13,7 @@ import { appLink } from './config/links';
 import Login from './pages/LoginPage';
 import ProgramDetailPage from './pages/ProgramDetailPage';
 import RecoverPasswordPage from './pages/RecoverPasswordPage';
+import AthleteAreaPage from './pages/AthleteAreaPage';
 
 const AppRoutes = () => {
   return (
@@ -44,7 +45,6 @@ const AppRoutes = () => {
             path={appLink.createPrograms.href}
             element={<ProgramAdd />}
           />
-
         </Route>
         <Route
           path={appLink.programDetail(':slug', '').href}
@@ -71,6 +71,10 @@ const AppRoutes = () => {
           path={appLink.forgotPassword.href}
           element={<RecoverPasswordPage />}
         />
+      <Route
+        path={appLink.athlete(':id').href}
+        element={<AthleteAreaPage />}
+      />
       </Routes>
     </Suspense>
   );
