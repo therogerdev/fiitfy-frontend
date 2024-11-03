@@ -241,9 +241,7 @@ export enum Role {
     success: boolean;
     type: 'classEnrollment';
     total: number;
-    data: Array<{
-      attributes: ClassEnrollment;
-    }>;
+    data: ClassEnrollment;
     meta: {
       timestamp: string;
     };
