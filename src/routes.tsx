@@ -14,6 +14,8 @@ import Login from './pages/LoginPage';
 import ProgramDetailPage from './pages/ProgramDetailPage';
 import RecoverPasswordPage from './pages/RecoverPasswordPage';
 import AthleteAreaPage from './pages/AthleteAreaPage';
+import ClassPage from './pages/ClassPage';
+import ClassDetail from './components/Class/ClassDetail';
 
 const AppRoutes = () => {
   return (
@@ -65,16 +67,21 @@ const AppRoutes = () => {
         />
 
         {/* Public Routes */}
+        <Route path={appLink.classes.href} element={<ClassPage />} />
+        <Route
+          path={appLink.classDetail(':id', '').href}
+          element={<ClassDetail />}
+        />
         <Route path={appLink.login.href} element={<Login />} />
         <Route path='*' element={<div>404 Not Found</div>} />
         <Route
           path={appLink.forgotPassword.href}
           element={<RecoverPasswordPage />}
         />
-      <Route
-        path={appLink.athlete(':id').href}
-        element={<AthleteAreaPage />}
-      />
+        <Route
+          path={appLink.athlete(':id').href}
+          element={<AthleteAreaPage />}
+        />
       </Routes>
     </Suspense>
   );
