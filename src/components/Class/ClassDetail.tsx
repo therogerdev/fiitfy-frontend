@@ -1,15 +1,16 @@
 import { apiClient } from '@/config/axios.config';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
 import {
     ClassEnrollmentResponse,
-    ClassEnrollmentStatus
+    ClassEnrollmentStatus,
+    ClientError
 } from '@/types';
 import { EndpointType } from '@/types/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useParams } from 'react-router';
 import { Button } from '../ui/button';
+import SearchAthlete from './SearchAthlete';
 
 const fetchClassDetail = async (id: string) => {
   const response = await apiClient.get(`${EndpointType.Class}/${id}`);
@@ -18,7 +19,7 @@ const fetchClassDetail = async (id: string) => {
 };
 
 const ClassDetail = () => {
-  const { user } = useAuth();
+  //   const { user } = useAuth();
   const { toast } = useToast();
 
   const { id } = useParams();
@@ -67,7 +68,7 @@ const ClassDetail = () => {
         });
       }
     },
-    onError: (error: AxiosError<{ error: Error }>) => {
+    onError: (error: AxiosError<ClientError>) => {
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -84,26 +85,29 @@ const ClassDetail = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  console.log(
-    `${EndpointType.Enroll}/${classDetail?.data.id}/enroll`
-  );
-
   return (
-    <div className='p-6'>
-      <h1 className='text-2xl font-bold'>{classDetail?.data.name}</h1>
-      <p>{classDetail?.data.id}</p>
+    <div className='flex'>
+      <div className='p-6'>
+        <h1 className='text-2xl font-bold'>
+          {classDetail?.data.name}
+        </h1>
+        <p>{classDetail?.data.id}</p>
 
-      <p>{classDetail?.data.description}</p>
-      <Button
-        onClick={() =>
-          mutate({
-            classId: classDetail.data.id,
-            athleteId: '59147988-1448-404f-8832-b8dfab7ff2df',
-          })
-        }
-      >
-        Enroll to this Class
-      </Button>
+        <p>{classDetail?.data.description}</p>
+        <Button
+          onClick={() =>
+            mutate({
+              classId: classDetail.data.id,
+              athleteId: '5446f177-bc52-4e78-a994-efeb77acc23a',
+            })
+          }
+        >
+          Enroll to this Class
+        </Button>
+      </div>
+      <div className=''>
+        <SearchAthlete />
+      </div>
     </div>
   );
 };

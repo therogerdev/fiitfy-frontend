@@ -342,3 +342,5 @@ export enum Role {
       timestamp: string;
     };
   }
+
+  export interface ClientError{ error: Error }
