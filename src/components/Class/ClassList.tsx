@@ -27,7 +27,6 @@ const ClassList = () => {
 
   if (isLoading) return <Spinner size="md" containerHeight={400} />;
   if (error instanceof Error) return <div>Error: {error.message}</div>;
-  console.log(classList?.data)
   return <LiveClasses classes={classList?.data.map((item) => item) || []} />;
 };
 

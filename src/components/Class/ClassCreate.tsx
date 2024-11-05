@@ -159,7 +159,6 @@ const ClassCreateForm = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log('Submitting data:', data);
     createClassMutation.mutate(data);
   };
 
