@@ -1,16 +1,13 @@
 import { apiClient } from '@/config/axios.config';
-import { useToast } from '@/hooks/use-toast';
-import {
-    ClassEnrollmentResponse,
-    ClassEnrollmentStatus,
-    ClientError
-} from '@/types';
+import { selectedAthleteIdAtom } from '@/store/class';
 import { EndpointType } from '@/types/api';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { useParams } from 'react-router';
-import { Button } from '../ui/button';
-import SearchAthlete from './SearchAthlete';
+import { useQuery } from '@tanstack/react-query';
+import { useAtomValue } from 'jotai';
+import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import Modal from '../ui/modal';
+import { ClassEnrollments } from './ClassEnrollments';
+import { ClassInfo } from './ClassInfo';
 
 const fetchClassDetail = async (id: string) => {
   const response = await apiClient.get(`${EndpointType.Class}/${id}`);
@@ -19,9 +16,6 @@ const fetchClassDetail = async (id: string) => {
 };
 
 const ClassDetail = () => {
-  //   const { user } = useAuth();
-  const { toast } = useToast();
-
   const { id } = useParams();
   const {
     data: classDetail,
@@ -33,82 +27,44 @@ const ClassDetail = () => {
     enabled: !!id,
   });
 
-  const { mutate } = useMutation({
-    mutationFn: ({
-      classId,
-      athleteId,
-    }: {
-      classId: string;
-      athleteId: string;
-    }) => {
-      return apiClient.post(
-        `/${EndpointType.Enroll}/${classId}/enroll`,
-        {
-          athleteId,
-        }
-      );
-    },
-    onSuccess: ({
-      data: enrollment,
-    }: {
-      data: ClassEnrollmentResponse;
-    }) => {
-      if (
-        enrollment.data.status === ClassEnrollmentStatus.WAITLISTED
-      ) {
-        toast({
-          variant: 'info',
-          title: 'Waitlist',
-          description: `This class is full, you are on the waitlist.`,
-        });
-      } else {
-        toast({
-          title: 'Success',
-          description: `You have successfully enrolled to this class`,
-        });
-      }
-    },
-    onError: (error: AxiosError<ClientError>) => {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: `${error?.response?.data?.error}`,
-      });
-    },
-  });
+  const selectedAthleteId = useAtomValue(selectedAthleteIdAtom);
+
+  useEffect(() => {}, [selectedAthleteId]);
+
+  const navigate = useNavigate();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Modal size='lg'>Loading...</Modal>;
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <Modal size='lg'>Error: {error.message}</Modal>;
   }
 
-  return (
-    <div className='flex'>
-      <div className='p-6'>
-        <h1 className='text-2xl font-bold'>
-          {classDetail?.data.name}
-        </h1>
-        <p>{classDetail?.data.id}</p>
+  // handle close modal
+  const closeModal = () => {
+    navigate(-1);
+  };
 
-        <p>{classDetail?.data.description}</p>
-        <Button
-          onClick={() =>
-            mutate({
-              classId: classDetail.data.id,
-              athleteId: '5446f177-bc52-4e78-a994-efeb77acc23a',
-            })
-          }
-        >
-          Enroll to this Class
-        </Button>
-      </div>
-      <div className=''>
-        <SearchAthlete />
-      </div>
-    </div>
+  return (
+    <Modal
+      size='lg'
+      title={classDetail.data.name}
+      description=' Manage class settings and set preferences.'
+      onClose={() => closeModal()}
+    >
+      <ClassInfo
+        id={classDetail.data.id}
+        className={classDetail.data.name}
+        description={classDetail.data.description}
+        date={classDetail.data.date}
+        time={classDetail.data.time}
+        duration={classDetail.data.duration}
+        coachId={classDetail.data.coachId}
+      />
+
+      <ClassEnrollments classId={classDetail.data.id} />
+    </Modal>
   );
 };
 

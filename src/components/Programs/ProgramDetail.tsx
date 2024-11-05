@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { appLink } from '@/config/links';
-import { useToast } from '@/hooks/use-toast';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { useDeleteProgramMutation } from '@/hooks/useDeleteProgramMutation';
 import { fetchProgramDetail } from '@/services/program';
 import { isQuickViewAtom } from '@/store/programs';
@@ -40,7 +40,9 @@ const ProgramDetail = () => {
   const [slugParameter, setSlugParameter] = useState<string | null>(
     slug || null
   );
-  const { toast } = useToast();
+
+  const { copyToClipboard } = useCopyToClipboard();
+
   const { mutate, isLoading: isDeleting } =
     useDeleteProgramMutation();
 
@@ -70,23 +72,6 @@ const ProgramDetail = () => {
   if (isLoading) return <Spinner size='md' containerHeight={400} />;
   if (error) return <p>Error fetching program details.</p>;
 
-  // Func copy ID to the clipboard
-  const handleCopyId = (id: string | undefined) => {
-    if (id) {
-      navigator.clipboard
-        .writeText(id)
-        .then(() => {
-          toast({
-            variant: 'info',
-            title: 'Copied!',
-            description: `Program ID ${id} has been copied to clipboard.`,
-          });
-        })
-        .catch((error) => {
-          console.error('Failed to copy program ID: ', error);
-        });
-    }
-  };
 
   // function to handle full isQuickView
   const handleFullView = () => {
@@ -109,7 +94,7 @@ const ProgramDetail = () => {
                 size='icon'
                 variant='outline'
                 className='w-6 h-6 transition-opacity opacity-0 group-hover:opacity-100'
-                onClick={() => handleCopyId(program?.data.id)}
+                onClick={() => copyToClipboard(program?.data.id)}
               >
                 <Copy className='w-3 h-3' />
                 <span className='sr-only'>Copy Program ID</span>

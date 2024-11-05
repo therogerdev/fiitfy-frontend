@@ -141,7 +141,7 @@ const LiveClasses: React.FC<LiveClassesProps> = ({ classes }) => {
       <div className="p-6">
         <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
         {sortedDates.map((date) => (
-          <section key={date} ref={(el) => (sectionRefs.current[date] = el)} className="mb-6">
+          <section key={date} ref={(el) => (sectionRefs.current[date] = el as HTMLDivElement)} className="mb-6">
             <h3 className="mb-2 text-lg font-semibold">{formatDate(new Date(date))}</h3>
             {classesByDate[date].map((classInfo) => (
               <ClassCard key={classInfo.id} classInfo={classInfo} />

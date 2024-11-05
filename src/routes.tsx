@@ -16,6 +16,7 @@ import RecoverPasswordPage from './pages/RecoverPasswordPage';
 import AthleteAreaPage from './pages/AthleteAreaPage';
 import ClassPage from './pages/ClassPage';
 import ClassDetail from './components/Class/ClassDetail';
+import ClassCreate from './components/Class/ClassCreate';
 
 const AppRoutes = () => {
   return (
@@ -67,11 +68,16 @@ const AppRoutes = () => {
         />
 
         {/* Public Routes */}
-        <Route path={appLink.classes.href} element={<ClassPage />} />
-        <Route
-          path={appLink.classDetail(':id', '').href}
-          element={<ClassDetail />}
-        />
+        <Route path={appLink.classes.href} element={<ClassPage />}>
+          <Route
+            path={appLink.classDetail(':id', '').href}
+            element={<ClassDetail />}
+          />
+          <Route
+            path={appLink.createClass.href}
+            element={<ClassCreate />}
+          />
+        </Route>
         <Route path={appLink.login.href} element={<Login />} />
         <Route path='*' element={<div>404 Not Found</div>} />
         <Route

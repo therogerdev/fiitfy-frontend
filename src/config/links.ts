@@ -3,6 +3,7 @@ export const appLink = {
   programs: { label: 'Programs', href: '/programs' },
   createPrograms: { label: 'Create Program', href: '/programs/new' },
   classes: { label: 'Classes', href: '/class' },
+  createClass: { label: 'Create Class', href: '/class/create' },
   forgotPassword: {
     label: 'Forgot Password?',
     href: '/recover-password',

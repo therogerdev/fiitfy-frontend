@@ -1,5 +1,6 @@
 import ContentLayout from '@/components/layouts/content-layout';
 import BreadcrumbComponent from '@/components/ui/BreadcrumbsComponent';
+import { Button } from '@/components/ui/button';
 import Spinner from '@/components/ui/spinner';
 import { apiClient } from '@/config/axios.config';
 import { appLink } from '@/config/links';
@@ -7,8 +8,9 @@ import { Class, ClassResponse } from '@/types';
 import { EndpointType } from '@/types/api';
 import { useQuery } from '@tanstack/react-query';
 import { addDays, format } from 'date-fns';
+import { PlusCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 const breadcrumbLinks = [appLink.classes];
 
@@ -16,7 +18,9 @@ const ClassPage = () => {
   return (
     <ContentLayout className=''>
       <BreadcrumbComponent links={breadcrumbLinks} />
+
       <ClassList />
+      <Outlet />
     </ContentLayout>
   );
 };
@@ -26,19 +30,20 @@ export default ClassPage;
 // Fetch classes from the API
 const fetchAllClasses = async (): Promise<ClassResponse> => {
   const response = await apiClient.get(
-    `/${EndpointType.Class}/list?skip=0&take=30&orderBy=startTime&order=asc`
+    `/${EndpointType.Class}/list?skip=0&take=30&orderBy=date&order=asc`
   );
   return response.data;
 };
 
 // ClassList Component
 const ClassList = () => {
+  const navigate = useNavigate();
   const {
     data: classList,
     error,
     isLoading,
   } = useQuery<ClassResponse>({
-    queryKey: ['classes'],
+    queryKey: ['classList'],
     queryFn: fetchAllClasses,
   });
 
@@ -49,19 +54,31 @@ const ClassList = () => {
   if (isLoading) return <Spinner size='md' containerHeight={400} />;
   if (error instanceof Error)
     return <div>Error: {error.message}</div>;
-
-  console.log('classList', classList?.data);
   return (
-    <div className='p-6'>
-      <CalendarClassNextSevenDays
-        selectedDate={selectedDate}
-        onSelectDate={setSelectedDate}
-      />
-      <ClassListView
-        classes={classList?.data.map((item) => item) || []}
-        selectedDate={selectedDate}
-      />
-    </div>
+    <>
+      <div className='flex justify-end'>
+        <Button
+          onClick={() => navigate(appLink.createClass.href)}
+          size='sm'
+          className='gap-1 h-7'
+        >
+          <PlusCircle className='h-3.5 w-3.5' />
+          <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
+            {appLink.createClass.label}
+          </span>
+        </Button>
+      </div>
+      <div className='px-6'>
+        <CalendarClassNextSevenDays
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+        />
+        <ClassListView
+          classes={classList?.data.map((item) => item) || []}
+          selectedDate={selectedDate}
+        />
+      </div>
+    </>
   );
 };
 
@@ -137,7 +154,7 @@ const ClassListView: React.FC<ClassListViewProps> = ({
 
   const classesByDate = classes.filter(
     (classItem) =>
-      format(classItem.startTime || new Date(), 'yyyy-MM-dd') ===
+      format(classItem.date || new Date(), 'yyyy-MM-dd') ===
       selectedDate
   );
 
@@ -169,7 +186,7 @@ const ClassListItem: React.FC<ClassListItemProps> = ({
     <div className='flex items-center justify-between p-4 mb-2 bg-white border rounded-lg'>
       <div className='flex items-center space-x-4'>
         <div className='text-xs text-gray-500'>
-          {format(classInfo.startTime as Date, 'H:mm a')}
+          {format(classInfo.date as Date, 'H:mm a')}
         </div>
         <div>
           <h3 className='font-bold'>{classInfo.name}</h3>
