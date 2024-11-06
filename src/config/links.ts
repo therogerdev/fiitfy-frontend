@@ -27,9 +27,9 @@ export const appLink = {
   login: { label: 'Login', href: '/login' },
 
   // Athletes
-  athletes: { label: 'Athletes', href: '/athletes' }, //athletes list for admin users
-  athlete: (id: string) => ({
-    label: 'Athlete Area',
+  athletes: { label: 'Athletes', href: '/athlete' }, //athletes list for admin users
+  athleteDetail: (id: string) => ({
+    label: 'Athlete Detail',
     href: `/athlete/${id}`,
   }),
 };

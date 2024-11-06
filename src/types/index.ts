@@ -90,6 +90,7 @@ export interface Athlete {
   userId?: string;
   firstName: string;
   lastName: string;
+  phone?: string;
   email: string;
   gender: string;
   profileImageUrl?: string;
@@ -220,6 +221,13 @@ export interface AthleteResponse {
   type: 'athlete';
   total: number;
   data: Athlete[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    pageSize: number;
+    totalCount: number;
+
+  };
   meta: {
     timestamp: string;
   };

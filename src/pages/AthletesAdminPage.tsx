@@ -5,27 +5,48 @@ import ContentLayout from '@/components/layouts/content-layout';
 import { PageHeader } from '@/components/layouts/page-header';
 import BreadcrumbComponent from '@/components/ui/BreadcrumbsComponent';
 import { appLink } from '@/config/links';
+import {
+  currentPageAtom,
+  rowsPerPageAtom,
+  totalAthletesAtom,
+} from '@/store/athletes';
+import { useAtom, useAtomValue } from 'jotai';
+import { useState } from 'react';
 import { Outlet } from 'react-router';
 
-
 const AthletesAdminPage = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
+  const [rowsPerPage, setRowsPerPage] = useAtom(rowsPerPageAtom);
+  const totalAthletes = useAtomValue(totalAthletesAtom);
+
   return (
     <ContentLayout className=''>
       <BreadcrumbComponent links={[appLink.athletes]} />
-      <PageHeader title='Athletes' actions={
-        <AthleteActions
-        onFilter={() => console.log("first")}
-        onAdd={() => console.log("first")}
-        onPageChange={() => console.log("first")}
-        totalAthletes={300}
-        setRowsPerPage={() => {}}
-        currentPage={1}
-        rowsPerPage={10}
+      <PageHeader
+        title='Athletes'
+        actions={
+          <AthleteActions
+            onFilter={setSearchQuery}
+            onAdd={() => console.log('Add Athlete')}
+            onPageChange={setCurrentPage}
+            totalAthletes={totalAthletes}
+            setRowsPerPage={setRowsPerPage}
+            currentPage={currentPage}
+            rowsPerPage={rowsPerPage}
+          />
+        }
+      />
+      <AthleteSearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery} // Pass setSearchQuery to AthleteSearchBar
+      />
+      <AthleteTable
+        searchQuery={searchQuery}
+        currentPage={currentPage}
+        pageSize={10}
+      />
 
-
-      />} />
-      <AthleteSearchBar />
-      <AthleteTable searchQuery={''} currentPage={1} rowsPerPage={9} />
       <Outlet />
     </ContentLayout>
   );

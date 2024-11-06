@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 
-export function useDebounce(
-  value: string,
-  delay: number = 500
-): string {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+export function useDebounce(value: string, delay: number = 500, minLength: number = 4): string {
+  const [debouncedValue, setDebouncedValue] = useState('');
 
   useEffect(() => {
+    if (value.length < minLength) {
+      setDebouncedValue('');
+      return;
+    }
+
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
@@ -14,7 +16,7 @@ export function useDebounce(
     return () => {
       clearTimeout(handler);
     };
-  }, [value, delay]);
+  }, [value, delay, minLength]);
 
   return debouncedValue;
 }
