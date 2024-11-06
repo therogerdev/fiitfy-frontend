@@ -31,7 +31,7 @@ const fetchAthleteBySearch = async (
   const response = await apiClient.get<{ data: Athlete[] }>(
     `${EndpointType.Athlete}/search`,
     {
-      params: { name: searchQuery },
+      params: { name: searchQuery, phone: searchQuery },
     }
   );
   return response.data.data;

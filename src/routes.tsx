@@ -7,16 +7,17 @@ import ProgramsPage from './pages/ProgramsPage';
 
 // Import appLink from your links.ts
 import { ProtectedRoute } from './auth/ProtectedRoute';
+import AthleteDetailModal from './components/Athletes/AthleteDetailModal';
+import ClassCreate from './components/Class/ClassCreate';
+import ClassDetail from './components/Class/ClassDetail';
 import ProgramAdd from './components/Programs/ProgramCreate';
 import Spinner from './components/ui/spinner';
 import { appLink } from './config/links';
+import AthleteAreaPage from './pages/AthletesAdminPage';
+import ClassPage from './pages/ClassPage';
 import Login from './pages/LoginPage';
 import ProgramDetailPage from './pages/ProgramDetailPage';
 import RecoverPasswordPage from './pages/RecoverPasswordPage';
-import AthleteAreaPage from './pages/AthletesAdminPage';
-import ClassPage from './pages/ClassPage';
-import ClassDetail from './components/Class/ClassDetail';
-import ClassCreate from './components/Class/ClassCreate';
 
 const AppRoutes = () => {
   return (
@@ -87,11 +88,12 @@ const AppRoutes = () => {
         <Route
           path={appLink.athletes.href}
           element={<AthleteAreaPage />}
-        />
-        <Route
-          path={appLink.athlete(':id').href}
-          element={<div>change it on routes file</div>}
-        />
+        >
+          <Route
+            path={appLink.athleteDetail(':id').href}
+            element={<AthleteDetailModal />}
+          />
+        </Route>
       </Routes>
     </Suspense>
   );

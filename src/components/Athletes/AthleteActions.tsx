@@ -24,7 +24,7 @@ import {
 } from '../ui/select';
 
 interface AthleteActionsProps {
-  onFilter: (searchQuery: string) => void;
+  onFilter?: (searchQuery: string) => void;
   onAdd: () => void;
   rowsPerPage: number;
   setRowsPerPage: (rows: number) => void;
@@ -34,7 +34,6 @@ interface AthleteActionsProps {
 }
 
 const AthleteActions: React.FC<AthleteActionsProps> = ({
-  onFilter,
   onAdd,
   rowsPerPage,
   setRowsPerPage,
@@ -42,13 +41,15 @@ const AthleteActions: React.FC<AthleteActionsProps> = ({
   currentPage,
   onPageChange,
 }) => {
-  // Calculate pagination range
   const totalPages = Math.ceil(totalAthletes / rowsPerPage);
-  const startRange = currentPage * rowsPerPage + 1;
-  const endRange = Math.min(
-    (currentPage + 1) * rowsPerPage,
-    totalAthletes
-  );
+  const startRange = (currentPage - 1) * rowsPerPage + 1;
+  const endRange = Math.min(currentPage * rowsPerPage, totalAthletes);
+
+  // Pagination handlers
+  const handleFirstPage = () => onPageChange(1);
+  const handlePreviousPage = () => onPageChange(Math.max(currentPage - 1, 1));
+  const handleNextPage = () => onPageChange(Math.min(currentPage + 1, totalPages));
+  const handleLastPage = () => onPageChange(totalPages);
 
   return (
     <div className='flex items-center justify-between mb-4 space-x-4'>
@@ -69,15 +70,13 @@ const AthleteActions: React.FC<AthleteActionsProps> = ({
             Active
           </DropdownMenuCheckboxItem>
           <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem>
-            Archived
-          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       {/* Add Athlete Button */}
       <Button size={'sm'} onClick={onAdd} className='flex-shrink-0'>
-        <PlusCircle className=' w-3.5 h-3.5 mr-1' />
+        <PlusCircle className='w-3.5 h-3.5 mr-1' />
         Add Athlete
       </Button>
 
@@ -90,6 +89,7 @@ const AthleteActions: React.FC<AthleteActionsProps> = ({
           <SelectValue placeholder='Rows' />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value='5'>5</SelectItem>
           <SelectItem value='10'>10</SelectItem>
           <SelectItem value='20'>20</SelectItem>
           <SelectItem value='50'>50</SelectItem>
@@ -106,21 +106,35 @@ const AthleteActions: React.FC<AthleteActionsProps> = ({
         <Button
           variant='outline'
           className='hidden w-8 h-8 p-0 lg:flex'
+          onClick={handleFirstPage}
+          disabled={currentPage <= 1}
         >
           <span className='sr-only'>Go to first page</span>
           <ChevronsLeft />
         </Button>
-        <Button variant='outline' className='w-8 h-8 p-0'>
+        <Button
+          variant='outline'
+          className='w-8 h-8 p-0'
+          onClick={handlePreviousPage}
+          disabled={currentPage <= 1}
+        >
           <span className='sr-only'>Go to previous page</span>
           <ChevronLeft />
         </Button>
-        <Button variant='outline' className='w-8 h-8 p-0'>
+        <Button
+          variant='outline'
+          className='w-8 h-8 p-0'
+          onClick={handleNextPage}
+          disabled={currentPage >= totalPages}
+        >
           <span className='sr-only'>Go to next page</span>
           <ChevronRight />
         </Button>
         <Button
           variant='outline'
           className='hidden w-8 h-8 p-0 lg:flex'
+          onClick={handleLastPage}
+          disabled={currentPage >= totalPages}
         >
           <span className='sr-only'>Go to last page</span>
           <ChevronsRight />

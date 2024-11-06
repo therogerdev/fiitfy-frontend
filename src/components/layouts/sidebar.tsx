@@ -48,7 +48,7 @@ const Sidebar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                to={appLink.athlete('id').href}
+                to={appLink.athleteDetail('id').href}
                 className='flex items-center justify-center transition-colors rounded-lg h-9 w-9 hover:text-foreground md:h-8 md:w-8'
               >
                 <Users2 className='w-5 h-5' />
@@ -56,7 +56,7 @@ const Sidebar = () => {
               </Link>
             </TooltipTrigger>
             <TooltipContent side='right'>
-              {appLink.athlete('id').label}
+              {appLink.athleteDetail('id').label}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -81,17 +81,17 @@ const Sidebar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                to={appLink.athlete('id').href}
+                to={appLink.athleteDetail('id').href}
                 className='flex items-center justify-center transition-colors rounded-lg h-9 w-9 text-muted-foreground hover:text-foreground md:h-8 md:w-8'
               >
                 <Users2 className='w-5 h-5' />
                 <span className='sr-only'>
-                  {appLink.athlete('id').label}
+                  {appLink.athleteDetail('id').label}
                 </span>
               </Link>
             </TooltipTrigger>
             <TooltipContent side='right'>
-              {appLink.athlete('id').label}
+              {appLink.athleteDetail('id').label}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
