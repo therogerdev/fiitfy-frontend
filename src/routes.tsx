@@ -13,7 +13,7 @@ import { appLink } from './config/links';
 import Login from './pages/LoginPage';
 import ProgramDetailPage from './pages/ProgramDetailPage';
 import RecoverPasswordPage from './pages/RecoverPasswordPage';
-import AthleteAreaPage from './pages/AthleteAreaPage';
+import AthleteAreaPage from './pages/AthletesAdminPage';
 import ClassPage from './pages/ClassPage';
 import ClassDetail from './components/Class/ClassDetail';
 import ClassCreate from './components/Class/ClassCreate';
