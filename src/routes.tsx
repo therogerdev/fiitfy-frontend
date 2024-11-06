@@ -85,8 +85,12 @@ const AppRoutes = () => {
           element={<RecoverPasswordPage />}
         />
         <Route
-          path={appLink.athlete(':id').href}
+          path={appLink.athletes.href}
           element={<AthleteAreaPage />}
+        />
+        <Route
+          path={appLink.athlete(':id').href}
+          element={<div>change it on routes file</div>}
         />
       </Routes>
     </Suspense>
