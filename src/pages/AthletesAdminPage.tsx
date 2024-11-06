@@ -22,6 +22,7 @@ const AthletesAdminPage = () => {
         currentPage={1}
         rowsPerPage={10}
 
+
       />} />
       <AthleteSearchBar />
       <AthleteTable searchQuery={''} currentPage={1} rowsPerPage={9} />
