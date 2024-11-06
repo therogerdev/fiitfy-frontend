@@ -2,11 +2,16 @@ export const appLink = {
   dashboard: { label: 'Dashboard', href: '/dashboard' },
   programs: { label: 'Programs', href: '/programs' },
   createPrograms: { label: 'Create Program', href: '/programs/new' },
-  classes: { label: 'Classes', href: '/classes' },
+  classes: { label: 'Classes', href: '/class' },
+  createClass: { label: 'Create Class', href: '/class/create' },
   forgotPassword: {
     label: 'Forgot Password?',
     href: '/recover-password',
   },
+  classDetail: (slug: string, name: string) => ({
+    label: name,
+    href: `/class/${slug}`,
+  }),
   programDetail: (slug: string, name: string) => ({
     label: name,
     href: `/program/${slug}`,

@@ -16,6 +16,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { getInitials } from '@/lib/utils';
 
 function UserSettings() {
   const { user, loading } = useAuth();
@@ -40,12 +41,7 @@ function UserSettings() {
     return <div>No user found. Please log in.</div>;
   }
 
-  const getInitials = (firstName: string, lastName: string) => {
-    const firstInitial = firstName ? firstName[0] : '';
-    const lastInitial = lastName ? lastName[0] : '';
 
-    return `${firstInitial}${lastInitial}`;
-  };
 
   return (
     <DropdownMenu>
