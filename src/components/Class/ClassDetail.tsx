@@ -46,11 +46,14 @@ const ClassDetail = () => {
     navigate(-1);
   };
 
+  console.log("capacity", classDetail.data.capacity)
+  console.log("activeEnrollments", classDetail.data.activeEnrollments)
+
   return (
     <Modal
       size='lg'
       title={classDetail.data.name}
-      description=' Manage class settings and set preferences.'
+      description=''
       onClose={() => closeModal()}
     >
       <ClassInfo
@@ -63,7 +66,13 @@ const ClassDetail = () => {
         coachId={classDetail.data.coachId}
       />
 
-      <ClassEnrollments classId={classDetail.data.id} />
+      <ClassEnrollments
+        classId={classDetail.data.id}
+        capacity={
+          classDetail.data.capacity -
+          classDetail.data.activeEnrollments
+        }
+      />
     </Modal>
   );
 };
