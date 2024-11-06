@@ -1,25 +1,26 @@
 import {
-    ChevronLeft,
-    ChevronRight,
-    ChevronsLeft,
-    ChevronsRight,
-    ListFilter,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  ListFilter,
+  PlusCircle,
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '../ui/select';
 
 interface AthleteActionsProps {
@@ -74,9 +75,10 @@ const AthleteActions: React.FC<AthleteActionsProps> = ({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Add Client Button */}
-      <Button onClick={onAdd} className='flex-shrink-0'>
-        + Add Client
+      {/* Add Athlete Button */}
+      <Button size={'sm'} onClick={onAdd} className='flex-shrink-0'>
+        <PlusCircle className=' w-3.5 h-3.5 mr-1' />
+        Add Athlete
       </Button>
 
       {/* Rows per page Select */}
