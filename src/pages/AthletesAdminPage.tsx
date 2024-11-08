@@ -14,7 +14,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { Outlet } from 'react-router';
 
-const AthletesAdminPage = () => {
+const AthletesDetailAdminPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
   const [rowsPerPage, setRowsPerPage] = useAtom(rowsPerPageAtom);
@@ -22,7 +22,7 @@ const AthletesAdminPage = () => {
 
   return (
     <ContentLayout className=''>
-      <BreadcrumbComponent links={[appLink.athletes]} />
+      <BreadcrumbComponent links={[appLink.athletes()]} />
       <PageHeader
         title='Athletes'
         actions={
@@ -52,4 +52,4 @@ const AthletesAdminPage = () => {
   );
 };
 
-export default AthletesAdminPage;
+export default AthletesDetailAdminPage;

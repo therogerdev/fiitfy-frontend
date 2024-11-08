@@ -1,11 +1,11 @@
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
-import { logoutRequest } from '@/services/auth';
-import { logoutAtom } from '@/store/user';
-import { useMutation } from '@tanstack/react-query';
-import { useSetAtom } from 'jotai';
-import { useNavigate } from 'react-router';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { logoutRequest } from "@/services/auth";
+import { logoutAtom } from "@/store/user";
+import { useMutation } from "@tanstack/react-query";
+import { useSetAtom } from "jotai";
+import { useNavigate } from "react-router";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { getInitials } from '@/lib/utils';
+} from "../ui/dropdown-menu";
+import { getInitials } from "@/lib/utils";
 
 function UserSettings() {
   const { user, loading } = useAuth();
@@ -28,7 +28,7 @@ function UserSettings() {
     onSuccess: (data) => {
       if (data.logout) {
         setLogout();
-        navigate('/login');
+        navigate("/login");
       }
     },
   });
@@ -41,33 +41,28 @@ function UserSettings() {
     return <div>No user found. Please log in.</div>;
   }
 
-
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          className='relative w-8 h-8 rounded-full'
-        >
-          <Avatar className='w-8 h-8'>
-            <AvatarImage src='/avatars/01.png' alt={user.username} />
+        <Button variant="ghost" className="relative w-8 h-8 rounded-full">
+          <Avatar className="w-8 h-8">
+            <AvatarImage
+              src={user.athlete.profileImageUrl}
+              alt={user.username}
+            />
             <AvatarFallback>
-              {getInitials(
-                user.athlete.firstName,
-                user.athlete.lastName
-              )}
+              {getInitials(user.athlete.firstName, user.athlete.lastName)}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-56' align='end' forceMount>
-        <DropdownMenuLabel className='font-normal'>
-          <div className='flex flex-col space-y-1'>
-            <p className='text-sm font-medium leading-none'>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">
               {`${user.athlete.firstName} ${user.athlete.lastName}`}
             </p>
-            <p className='text-xs leading-none text-muted-foreground'>
+            <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>
           </div>

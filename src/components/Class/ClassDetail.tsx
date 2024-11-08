@@ -1,13 +1,13 @@
-import { apiClient } from '@/config/axios.config';
-import { selectedAthleteIdAtom } from '@/store/class';
-import { EndpointType } from '@/types/api';
-import { useQuery } from '@tanstack/react-query';
-import { useAtomValue } from 'jotai';
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import Modal from '../ui/modal';
-import { ClassEnrollments } from './ClassEnrollments';
-import { ClassInfo } from './ClassInfo';
+import { apiClient } from "@/config/axios.config";
+import { selectedAthleteIdAtom } from "@/store/class";
+import { EndpointType } from "@/types/api";
+import { useQuery } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
+import Modal from "../ui/modal";
+import { ClassEnrollments } from "./ClassEnrollments";
+import { ClassInfo } from "./ClassInfo";
 
 const fetchClassDetail = async (id: string) => {
   const response = await apiClient.get(`${EndpointType.Class}/${id}`);
@@ -22,7 +22,7 @@ const ClassDetail = () => {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ['class', id],
+    queryKey: ["class", id],
     queryFn: () => fetchClassDetail(id as string),
     enabled: !!id,
   });
@@ -34,11 +34,11 @@ const ClassDetail = () => {
   const navigate = useNavigate();
 
   if (isLoading) {
-    return <Modal size='lg'>Loading...</Modal>;
+    return <Modal size="lg">Loading...</Modal>;
   }
 
   if (error) {
-    return <Modal size='lg'>Error: {error.message}</Modal>;
+    return <Modal size="lg">Error: {error.message}</Modal>;
   }
 
   // handle close modal
@@ -46,14 +46,11 @@ const ClassDetail = () => {
     navigate(-1);
   };
 
-  console.log("capacity", classDetail.data.capacity)
-  console.log("activeEnrollments", classDetail.data.activeEnrollments)
-
   return (
     <Modal
-      size='lg'
+      size="lg"
       title={classDetail.data.name}
-      description=''
+      description=""
       onClose={() => closeModal()}
     >
       <ClassInfo
@@ -69,8 +66,7 @@ const ClassDetail = () => {
       <ClassEnrollments
         classId={classDetail.data.id}
         capacity={
-          classDetail.data.capacity -
-          classDetail.data.activeEnrollments
+          classDetail.data.capacity - classDetail.data.activeEnrollments
         }
       />
     </Modal>

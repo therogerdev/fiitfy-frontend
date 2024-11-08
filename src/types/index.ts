@@ -43,14 +43,7 @@ export enum WorkoutType {
   Skill = 'Skill',
 }
 
-export enum MembershipType {
-  DAY = 'DAY',
-  MONTH = 'MONTH',
-  UNIT_PACKAGE = 'UNIT_PACKAGE',
-  TRIMESTER = 'TRIMESTER',
-  SEMESTER = 'SEMESTER',
-  SUBSCRIPTION = 'SUBSCRIPTION',
-}
+
 
 export interface Box {
   id: string;
@@ -106,19 +99,43 @@ export interface Athlete {
   updatedAt: Date;
   User?: User;
 }
-
+// Membership Type for Frontend
 export interface Membership {
   id: string;
   type: MembershipType;
-  priceId?: string;
-  stripeSubscriptionId?: string;
+  priceId?: string; // Stripe Price ID for subscription plans
+  stripeSubscriptionId?: string; // Stripe Subscription ID
+  name?: string; // Stripe Product name
   startDate: Date;
   endDate: Date;
   athleteId: string;
-  athlete: Athlete;
   createdAt: Date;
   updatedAt: Date;
+  athlete: Athlete; // Reference to the Athlete type
 }
+
+// Enum for Membership Types
+export enum MembershipType {
+  DAY = 'DAY',
+  MONTH = 'MONTH',
+  UNIT_PACKAGE = 'UNIT_PACKAGE',
+  TRIMESTER = 'TRIMESTER',
+  SEMESTER = 'SEMESTER',
+  SUBSCRIPTION = 'SUBSCRIPTION',
+}
+
+// Membership Response Type
+export interface MembershipResponse {
+  success: boolean;
+  type: 'membership';
+  data: Membership;
+  meta: {
+    timestamp: string;
+  };
+}
+
+
+
 
 export interface Components {
   id: string;
@@ -252,17 +269,7 @@ export interface ClassEnrollmentResponse {
     timestamp: string;
   };
 }
-export interface MembershipResponse {
-  success: boolean;
-  type: 'membership';
-  total: number;
-  data: Array<{
-    attributes: Membership;
-  }>;
-  meta: {
-    timestamp: string;
-  };
-}
+
 
 export interface UserResponse {
   success: boolean;
@@ -349,5 +356,5 @@ export interface MovementResponse {
 }
 
 export interface ClientError {
-  error: Error;
+  error: string;
 }

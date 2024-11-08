@@ -8,9 +8,9 @@ export const appLink = {
     label: 'Forgot Password?',
     href: '/recover-password',
   },
-  classDetail: (slug: string, name: string) => ({
+  classDetail: (id: string, name: string) => ({
     label: name,
-    href: `/class/${slug}`,
+    href: `/class/${id}`,
   }),
   programDetail: (slug: string, name: string) => ({
     label: name,
@@ -27,7 +27,11 @@ export const appLink = {
   login: { label: 'Login', href: '/login' },
 
   // Athletes
-  athletes: { label: 'Athletes', href: '/athlete' }, //athletes list for admin users
+  // athletes: { label: 'Athletes', href: '/athlete' }, //athletes list for admin users
+  athletes: (label?: string) => ({
+    label: label || 'Athletes',
+    href: '/athlete',
+  }),
   athleteDetail: (id: string) => ({
     label: 'Athlete Detail',
     href: `/athlete/${id}`,
