@@ -18,7 +18,7 @@ const fetchMembershipInformation = async (
   id: string
 ): Promise<MembershipResponse> => {
   const response = await apiClient.get<MembershipResponse>(
-    `${EndpointType.Membership}/${id}`
+    `${EndpointType.Athlete}/${id}/membership`
   );
   return response.data;
 };
