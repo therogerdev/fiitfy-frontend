@@ -63,6 +63,10 @@ const AppRoutes = () => {
         />
 
         {/* Public Routes */}
+        <Route
+          path="/checkout/success"
+          element={<div>You membership was confirmed! </div>}
+        />
         <Route path={appLink.classes.href} element={<ClassPage />}>
           <Route
             path={appLink.classDetail(":id", "").href}
