@@ -1,6 +1,5 @@
 import React from 'react';
 import { Sheet, SheetContent, SheetHeader } from './sheet';
-import { Separator } from './separator';
 
 type IModalProps = {
   size: 'sm' | 'md' | 'lg';
@@ -15,20 +14,19 @@ const Modal = ({
   children,
   title,
   description,
-  onClose
+  onClose,
 }: IModalProps) => {
   return (
-    <Sheet defaultOpen modal >
+    <Sheet defaultOpen modal>
       <SheetContent onClose={onClose} size={size}>
         <SheetHeader>
-          <div className='space-y-0.5'>
-            <h2 className='text-2xl font-bold tracking-tight'>
-              {title}
-            </h2>
-            <p className='text-muted-foreground'>{description}</p>
-          </div>
+          <header className='flex items-center justify-between px-6 py-4'>
+            <div>
+              <h1 className='text-xl font-semibold'>{title}</h1>
+              <p className='text-sm text-gray-500'>{description}</p>
+            </div>
+          </header>
         </SheetHeader>
-        <Separator className='my-4' />
         {children}
       </SheetContent>
     </Sheet>

@@ -174,7 +174,7 @@ const ClassCreateForm = () => {
           name='name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Class Name</FormLabel>
+              <FormLabel> Name</FormLabel>
               <FormControl>
                 <Input {...field} placeholder='Enter class name' />
               </FormControl>
