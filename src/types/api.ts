@@ -10,6 +10,7 @@ export enum EndpointType {
   Coach = 'coach',
   Class = 'class',
   Membership = 'stripe/membership',
+  Checkout = 'stripe/checkout',
   Enroll = 'enroll',
   Movement = 'movement',
   Box = 'box', // For gym/box entity

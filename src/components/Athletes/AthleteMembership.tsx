@@ -1,5 +1,5 @@
 import { apiClient } from "@/config/axios.config";
-import { ClientError, Membership, MembershipResponse } from "@/types";
+import { Athlete, ClientError, Membership, MembershipResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { CreditCard } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -9,8 +9,11 @@ import { format, isBefore } from "date-fns";
 import { Badge } from "../ui/badge";
 import { AthleteDetailCardLoading } from "./AthleteDetailCardLoading";
 import { AxiosError } from "axios";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router";
 interface AthleteMembershipProps {
   id: string;
+  athlete?: Athlete
 }
 
 // Fetches the membership information for a specific athlete
@@ -23,7 +26,8 @@ const fetchMembershipInformation = async (
   return response.data;
 };
 
-const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id }) => {
+const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id, athlete }) => {
+  const navigate = useNavigate()
   const {
     data: membershipResponse,
     error,
@@ -56,12 +60,29 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id }) => {
     return isBefore(endDate, now); // Checks if the endDate is before the current date
   };
 
+
+
   if (!membership)
     return (
-      <AthleteDetailCardLoading
-        title="Membership Response"
-        errorMessage="There is no membership associate to this account."
-      />
+      <Card className="p-2">
+        <CardHeader className="flex flex-col items-start justify-between pb-2 space-y-0">
+          <CardTitle className="font-semibold text-md text-primary">
+            {"Membership Information"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center mt-10 gap-y-4">
+          <p className="text-sm font-light text-primary">
+            {"There is no membership associate to this account."}
+          </p>
+          <Button 
+          onClick={() => navigate(`/athlete/${athlete?.id}/programs`, {
+            state: {
+              customerEmail: athlete?.email
+            }
+          })}
+          variant={"outline"}>Add Membership</Button>
+        </CardContent>
+      </Card>
     );
 
   return (

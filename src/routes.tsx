@@ -18,6 +18,7 @@ import ClassPage from "./pages/ClassPage";
 import Login from "./pages/LoginPage";
 import ProgramDetailPage from "./pages/ProgramDetailPage";
 import RecoverPasswordPage from "./pages/RecoverPasswordPage";
+import AthletePlans from "./components/Athletes/AthletePlans";
 
 const AppRoutes = () => {
   return (
@@ -87,7 +88,9 @@ const AppRoutes = () => {
         <Route
           path={appLink.athleteDetail(":id").href}
           element={<AthleteDetailPage />}
-        />
+        >
+          <Route path="programs" element={<AthletePlans />} />
+        </Route>
       </Routes>
     </Suspense>
   );

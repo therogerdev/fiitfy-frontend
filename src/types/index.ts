@@ -1,49 +1,47 @@
 export enum Role {
-  ADMIN = 'ADMIN',
-  MEMBER = 'MEMBER',
-  COACH = 'COACH',
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
+  COACH = "COACH",
 }
 
 export enum ClassType {
-  CROSSFIT = 'CROSSFIT',
-  YOGA = 'YOGA',
-  HIIT = 'HIIT',
-  WEIGHTLIFTING = 'WEIGHTLIFTING',
-  MUAYTHAI = 'MUAYTHAI',
+  CROSSFIT = "CROSSFIT",
+  YOGA = "YOGA",
+  HIIT = "HIIT",
+  WEIGHTLIFTING = "WEIGHTLIFTING",
+  MUAYTHAI = "MUAYTHAI",
 }
 
 export enum AttendanceStatus {
-  ATTENDED = 'ATTENDED',
-  MISSED = 'MISSED',
+  ATTENDED = "ATTENDED",
+  MISSED = "MISSED",
 }
 
 export enum ClassEnrollmentStatus {
-  ENROLLED = 'ENROLLED',
-  CANCELED = 'CANCELED',
-  WAITLISTED = 'WAITLISTED',
+  ENROLLED = "ENROLLED",
+  CANCELED = "CANCELED",
+  WAITLISTED = "WAITLISTED",
 }
 
 export enum RecurrenceType {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  BIWEEKLY = 'BIWEEKLY',
-  MONTHLY = 'MONTHLY',
-  CUSTOM = 'CUSTOM',
+  DAILY = "DAILY",
+  WEEKLY = "WEEKLY",
+  BIWEEKLY = "BIWEEKLY",
+  MONTHLY = "MONTHLY",
+  CUSTOM = "CUSTOM",
 }
 
 export enum WorkoutType {
-  ForTime = 'ForTime',
-  AMRAP = 'AMRAP',
-  EMOM = 'EMOM',
-  RFT = 'RFT',
-  Tabata = 'Tabata',
-  Chipper = 'Chipper',
-  Ladder = 'Ladder',
-  Strength = 'Strength',
-  Skill = 'Skill',
+  ForTime = "ForTime",
+  AMRAP = "AMRAP",
+  EMOM = "EMOM",
+  RFT = "RFT",
+  Tabata = "Tabata",
+  Chipper = "Chipper",
+  Ladder = "Ladder",
+  Strength = "Strength",
+  Skill = "Skill",
 }
-
-
 
 export interface Box {
   id: string;
@@ -116,26 +114,23 @@ export interface Membership {
 
 // Enum for Membership Types
 export enum MembershipType {
-  DAY = 'DAY',
-  MONTH = 'MONTH',
-  UNIT_PACKAGE = 'UNIT_PACKAGE',
-  TRIMESTER = 'TRIMESTER',
-  SEMESTER = 'SEMESTER',
-  SUBSCRIPTION = 'SUBSCRIPTION',
+  DAY = "DAY",
+  MONTH = "MONTH",
+  UNIT_PACKAGE = "UNIT_PACKAGE",
+  TRIMESTER = "TRIMESTER",
+  SEMESTER = "SEMESTER",
+  SUBSCRIPTION = "SUBSCRIPTION",
 }
 
 // Membership Response Type
 export interface MembershipResponse {
   success: boolean;
-  type: 'membership';
+  type: "membership";
   data: Membership;
   meta: {
     timestamp: string;
   };
 }
-
-
-
 
 export interface Components {
   id: string;
@@ -154,8 +149,6 @@ export interface Class {
   name: string;
   description?: string;
   classType?: ClassType;
-  startTime?: Date;
-  endTime?: Date;
   capacity?: number;
   coachId?: string;
   coach?: Athlete;
@@ -235,7 +228,7 @@ export interface Movement {
 
 export interface AthleteResponse {
   success: boolean;
-  type: 'athlete';
+  type: "athlete";
   total: number;
   data: Athlete[];
   pagination: {
@@ -243,7 +236,6 @@ export interface AthleteResponse {
     totalPages: number;
     pageSize: number;
     totalCount: number;
-
   };
   meta: {
     timestamp: string;
@@ -252,7 +244,7 @@ export interface AthleteResponse {
 
 export interface ClassResponse {
   success: boolean;
-  type: 'class';
+  type: "class";
   total: number;
   data: Class[];
   meta: {
@@ -262,7 +254,7 @@ export interface ClassResponse {
 
 export interface ClassEnrollmentResponse {
   success: boolean;
-  type: 'classEnrollment';
+  type: "classEnrollment";
   total: number;
   data: ClassEnrollment[];
   meta: {
@@ -270,10 +262,9 @@ export interface ClassEnrollmentResponse {
   };
 }
 
-
 export interface UserResponse {
   success: boolean;
-  type: 'user';
+  type: "user";
   total: number;
   data: Array<{
     attributes: User;
@@ -285,7 +276,7 @@ export interface UserResponse {
 
 export interface BoxResponse {
   success: boolean;
-  type: 'box';
+  type: "box";
   total: number;
   data: Array<{
     attributes: Box;
@@ -297,7 +288,7 @@ export interface BoxResponse {
 
 export interface ComponentsResponse {
   success: boolean;
-  type: 'components';
+  type: "components";
   total: number;
   data: Array<{
     attributes: Components;
@@ -309,7 +300,7 @@ export interface ComponentsResponse {
 
 export interface PerformanceResponse {
   success: boolean;
-  type: 'performance';
+  type: "performance";
   total: number;
   data: Array<{
     attributes: Performance;
@@ -321,7 +312,7 @@ export interface PerformanceResponse {
 
 export interface ProgramsResponse {
   success: boolean;
-  type: 'programs';
+  type: "programs";
   total: number;
   data: Array<{
     attributes: Programs;
@@ -333,7 +324,7 @@ export interface ProgramsResponse {
 
 export interface WorkoutResponse {
   success: boolean;
-  type: 'workout';
+  type: "workout";
   total: number;
   data: Array<{
     attributes: Workout;
@@ -345,7 +336,7 @@ export interface WorkoutResponse {
 
 export interface MovementResponse {
   success: boolean;
-  type: 'movement';
+  type: "movement";
   total: number;
   data: Array<{
     attributes: Movement;
