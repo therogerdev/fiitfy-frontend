@@ -3,7 +3,7 @@ import { appLink } from "@/config/links";
 import { Athlete } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useParams } from "react-router";
+import { Outlet, useParams } from "react-router";
 import ContentLayout from "../layouts/content-layout";
 import BreadcrumbComponent from "../ui/BreadcrumbsComponent";
 import Spinner from "../ui/spinner";
@@ -58,7 +58,7 @@ const AthleteDetailPage = () => {
           <AthleteDetailInformation athlete={athlete} />
 
           {/* Membership */}
-          <AthleteMembership id={id as string} />
+          <AthleteMembership id={id as string} athlete={athlete} />
           {/* Membership */}
 
           <AthleteDetailUpcoming />
@@ -70,6 +70,7 @@ const AthleteDetailPage = () => {
           <AthleteDetailSummaryCard />
         </div>
       </main>
+      <Outlet />
     </ContentLayout>
   );
 };

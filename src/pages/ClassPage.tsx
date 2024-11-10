@@ -30,7 +30,7 @@ export default ClassPage;
 // Fetch classes from the API
 const fetchAllClasses = async (): Promise<ClassResponse> => {
   const response = await apiClient.get(
-    `/${EndpointType.Class}/list?skip=0&take=30&orderBy=date&order=asc`
+    `/${EndpointType.Class}/list`
   );
   return response.data;
 };
