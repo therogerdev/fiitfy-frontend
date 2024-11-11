@@ -110,6 +110,7 @@ export interface Membership {
   createdAt: Date;
   updatedAt: Date;
   athlete: Athlete; // Reference to the Athlete type
+  isExpired: boolean;
 }
 
 // Enum for Membership Types
