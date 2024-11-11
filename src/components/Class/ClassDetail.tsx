@@ -3,11 +3,12 @@ import { selectedAthleteIdAtom } from "@/store/class";
 import { EndpointType } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Modal from "../ui/modal";
 import { ClassEnrollments } from "./ClassEnrollments";
 import { ClassInfo } from "./ClassInfo";
+import { queryClient } from "@/config/queryClient";
 
 const fetchClassDetail = async (id: string) => {
   const response = await apiClient.get(`${EndpointType.Class}/${id}`);
@@ -17,12 +18,15 @@ const fetchClassDetail = async (id: string) => {
 
 const ClassDetail = () => {
   const { id } = useParams();
+  const [isOpen, setIsOpen] = useState(true); // Start open if you want
+  const navigate = useNavigate();
+
   const {
     data: classDetail,
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["class", id],
+    queryKey: ["class-detail", id],
     queryFn: () => fetchClassDetail(id as string),
     enabled: !!id,
   });
@@ -30,8 +34,6 @@ const ClassDetail = () => {
   const selectedAthleteId = useAtomValue(selectedAthleteIdAtom);
 
   useEffect(() => {}, [selectedAthleteId]);
-
-  const navigate = useNavigate();
 
   if (isLoading) {
     return <Modal size="lg">Loading...</Modal>;
@@ -42,8 +44,14 @@ const ClassDetail = () => {
   }
 
   // handle close modal
-  const closeModal = () => {
-    navigate(-1);
+  const handleDialogChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      queryClient.invalidateQueries({
+        queryKey: ["classList"],
+      });
+      navigate(-1); // Go back when the dialog closes
+    }
   };
 
   return (
@@ -51,7 +59,15 @@ const ClassDetail = () => {
       size="lg"
       title={classDetail.data.name}
       description=""
-      onClose={() => closeModal()}
+      open={isOpen}
+      onOpenChange={handleDialogChange}
+      onClose={() => {
+        setIsOpen(!open);
+        navigate(-1);
+        queryClient.invalidateQueries({
+          queryKey: ["classList"],
+        });
+      }}
     >
       <ClassInfo
         id={classDetail.data.id}

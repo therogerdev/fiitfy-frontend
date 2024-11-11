@@ -1,25 +1,22 @@
-import { apiClient } from '@/config/axios.config';
-import { queryClient } from '@/config/queryClient';
-import { useToast } from '@/hooks/use-toast';
-import { useDebounce } from '@/hooks/useDebounce';
+import { apiClient } from "@/config/axios.config";
+import { queryClient } from "@/config/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   Athlete,
   ClassEnrollment,
   ClassEnrollmentResponse,
   ClassEnrollmentStatus,
   ClientError,
-} from '@/types';
-import { EndpointType } from '@/types/api';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { useAtom, useSetAtom } from 'jotai';
-import { useEffect } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import {
-  searchQueryAtom,
-  selectedAthleteIdAtom,
-} from '@/store/class';
+} from "@/types";
+import { EndpointType } from "@/types/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useAtom, useSetAtom } from "jotai";
+import { useEffect } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { searchQueryAtom, selectedAthleteIdAtom } from "@/store/class";
 
 const fetchAthleteBySearch = async (
   searchQuery: string
@@ -48,7 +45,7 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
   const debouncedSearchQuery = useDebounce(searchQuery);
 
   const { data: athleteResults, refetch } = useQuery<Athlete[]>({
-    queryKey: ['searchAthlete', debouncedSearchQuery],
+    queryKey: ["searchAthlete", debouncedSearchQuery],
     queryFn: () => fetchAthleteBySearch(debouncedSearchQuery),
     enabled: false,
   });
@@ -68,20 +65,25 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
         : [response.data.data];
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['enrollment'] });
+      queryClient.invalidateQueries({
+        queryKey: ["enrollment"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["class-detail", classId],
+      });
 
       data.forEach((enrollment) => {
         if (enrollment.status === ClassEnrollmentStatus.WAITLISTED) {
           toast({
-            title: 'WAITLIST!',
+            title: "WAITLIST!",
             description: `${enrollment.athlete.firstName} ${enrollment.athlete.lastName} has been added to the waitlist`,
-            variant: 'default',
+            variant: "default",
           });
         } else {
           toast({
-            title: 'Enrolled!',
+            title: "Enrolled!",
             description: `${enrollment.athlete.firstName} ${enrollment.athlete.lastName} has been enrolled successfully`,
-            variant: 'info',
+            variant: "info",
           });
         }
       });
@@ -90,13 +92,12 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
     },
     onError: (error) => {
       const errorMessage =
-        error?.response?.data?.error ||
-        'An unexpected error occurred';
+        error?.response?.data?.error || "An unexpected error occurred";
 
       toast({
-        title: 'Enrollment Error',
+        title: "Enrollment Error",
         description: errorMessage as string,
-        variant: 'destructive',
+        variant: "destructive",
       });
     },
   });
@@ -104,14 +105,12 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
   useEffect(() => {
     if (debouncedSearchQuery.trim()) {
       refetch().catch((error: Error) => {
-        console.error('Error fetching athletes:', error);
+        console.error("Error fetching athletes:", error);
       });
     }
   }, [debouncedSearchQuery, refetch]);
 
-  const handleSearchChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
@@ -123,22 +122,19 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
   return (
     <div>
       <Input
-        type='search'
-        placeholder='Search Athlete...'
+        type="search"
+        placeholder="Search Athlete..."
         value={searchQuery}
         onChange={handleSearchChange}
-        className=''
+        className=""
       />
       {debouncedSearchQuery && athleteResults && (
-        <div className='mt-4'>
+        <div className="mt-4">
           <ul>
             {athleteResults.slice(0, 10).map((athlete) => (
-              <li key={athlete.id} className='flex justify-between'>
+              <li key={athlete.id} className="flex justify-between">
                 <span>{`${athlete.firstName} ${athlete.lastName}`}</span>
-                <Button
-                  size='sm'
-                  onClick={() => handleEnrollClick(athlete.id)}
-                >
+                <Button size="sm" onClick={() => handleEnrollClick(athlete.id)}>
                   Enroll
                 </Button>
               </li>
