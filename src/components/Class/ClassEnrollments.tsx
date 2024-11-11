@@ -82,7 +82,7 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
         queryKey: ["enrollment"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["class", classId],
+        queryKey: ["class-detail", classId],
       });
     },
     onError: (error) => {
@@ -115,13 +115,21 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
         <div className="flex justify-between">
           <div>
             <CardTitle>Enrollments</CardTitle>
-            <CardDescription>{capacity} spots left</CardDescription>
+            {capacity === 0 ? (
+              <CardDescription>
+                <Badge className="mt-1" variant={"destructive"}>
+                  Class is Full
+                </Badge>
+              </CardDescription>
+            ) : (
+              <CardDescription>{capacity} spots left </CardDescription>
+            )}
           </div>
           <ClassEnrollAthlete classId={classId}>
             <Button size="sm" className="gap-1 h-7">
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Enroll Athlete
+                {capacity === 0 ? "Join Waitlist" : "Enroll Athlete"}
               </span>
             </Button>
           </ClassEnrollAthlete>
