@@ -51,9 +51,9 @@ export const AthleteDetailInformation = ({ athlete }: { athlete?: Athlete }) => 
                     {`${athlete?.firstName} ${athlete?.lastName}`}
                   </dd>
                 </div>
-                <div className="px-1 py-2 sm:grid sm:grid-cols-3 sm:gap-2 sm:px-0">
+                <div className="flex px-1 py-2 sm:grid sm:grid-cols-3 sm:gap-2 sm:px-0">
                   <dt className="font-semibold text-primary text-sm/6">Email</dt>
-                  <dd className="mt-1 text-secondary-foreground text-sm/6 sm:col-span-2 sm:mt-0">
+                  <dd className="mt-1 truncate text-secondary-foreground text-sm/6 sm:col-span-2 sm:mt-0 ">
                     {athlete?.email}
                   </dd>
                 </div>

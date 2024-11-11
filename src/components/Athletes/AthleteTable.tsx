@@ -1,20 +1,18 @@
-import { apiClient } from '@/config/axios.config';
-import { appLink } from '@/config/links';
-import { useDebounce } from '@/hooks/useDebounce';
-import { Athlete, AthleteResponse } from '@/types';
-import { EndpointType } from '@/types/api';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
-import { useQuery } from '@tanstack/react-query';
-import { useSetAtom } from 'jotai';
-import { EyeIcon } from 'lucide-react';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Table } from '../ui/table';
-import { totalAthletesAtom } from '@/store/athletes';
-
-
+import { apiClient } from "@/config/axios.config";
+import { appLink } from "@/config/links";
+import { useDebounce } from "@/hooks/useDebounce";
+import { Athlete, AthleteResponse } from "@/types";
+import { EndpointType } from "@/types/api";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useQuery } from "@tanstack/react-query";
+import { useSetAtom } from "jotai";
+import { EyeIcon } from "lucide-react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Table } from "../ui/table";
+import { totalAthletesAtom } from "@/store/athletes";
 
 interface AthleteTableProps {
   searchQuery: string;
@@ -57,12 +55,13 @@ const AthleteTable: React.FC<AthleteTableProps> = ({
     isLoading,
     error,
   } = useQuery<AthleteResponse>({
-    queryKey: ['athletes', debouncedSearchQuery, page, pageSize],
+    queryKey: ["athletes", debouncedSearchQuery, page, pageSize],
     queryFn: () =>
       debouncedSearchQuery.length >= 4
         ? fetchAthletesBySearch(debouncedSearchQuery)
         : fetchAthletes(page, pageSize),
-    enabled: debouncedSearchQuery.length === 0 || debouncedSearchQuery.length >= 4,
+    enabled:
+      debouncedSearchQuery.length === 0 || debouncedSearchQuery.length >= 4,
   });
 
   useEffect(() => {
@@ -72,7 +71,7 @@ const AthleteTable: React.FC<AthleteTableProps> = ({
   }, [athletes, setTotalAthletes]);
 
   if (isLoading) {
-    return <div className='w-full h-10'>Loading...</div>;
+    return <div className="w-full h-10">Loading...</div>;
   }
 
   if (error) {
@@ -80,50 +79,48 @@ const AthleteTable: React.FC<AthleteTableProps> = ({
   }
 
   return (
-    <ScrollArea className='max-h-48'>
+    <ScrollArea className="max-h-48">
       <Table>
         <AthleteTableHeader />
-        <tbody className='bg-white'>
+        <tbody className="bg-white">
           {athletes?.data.map((athlete: Athlete) => (
-            <tr key={athlete.id} className='border-t'>
-              <td className='px-4 py-2'>
-                <div className='flex items-center'>
+            <tr key={athlete.id} className="border-t">
+              <td className="px-4 py-2">
+                <div className="flex items-center">
                   <img
                     src={
                       athlete.profileImageUrl ||
-                      'https://hwchamber.co.uk/wp-content/uploads/2022/04/avatar-placeholder.gif'
+                      "https://hwchamber.co.uk/wp-content/uploads/2022/04/avatar-placeholder.gif"
                     }
                     alt={athlete.firstName}
-                    className='w-8 h-8 mr-2 rounded-full'
+                    className="w-8 h-8 mr-2 rounded-full"
                   />
                   <div>
-                    <div className='font-medium'>{`${athlete.firstName} ${athlete.lastName}`}</div>
-                    <div className='text-sm text-gray-500'>
-                      {athlete.email}
-                    </div>
+                    <div className="font-medium">{`${athlete.firstName} ${athlete.lastName}`}</div>
+                    <div className="text-sm text-gray-500">{athlete.email}</div>
                   </div>
                 </div>
               </td>
-              <td className='px-4 py-2'>{athlete.phone || 'N/A'}</td>
-              <td className='px-4 py-2'>{athlete.gender || 'N/A'}</td>
-              <td className='px-4 py-2'>
-                <Badge>{!athlete.isCoach ? 'Active' : 'Inactive'}</Badge>
+              <td className="px-4 py-2">{athlete.phone || "N/A"}</td>
+              <td className="px-4 py-2">{athlete.gender || "N/A"}</td>
+              <td className="px-4 py-2">
+                <Badge>{!athlete.isCoach ? "Active" : "Inactive"}</Badge>
               </td>
-              <td className='px-4 py-2'>
-                <div className='flex space-x-2'>
-                  <Button size={'sm'} variant={'outline'}>
+              <td className="px-4 py-2">
+                <div className="flex space-x-2">
+                  <Button size={"sm"} variant={"outline"}>
                     Edit
                   </Button>
-                  <Button variant={'destructive'} size={'sm'}>
+                  <Button variant={"destructive"} size={"sm"}>
                     Delete
                   </Button>
                   <Button
                     onClick={() =>
                       navigate(`${appLink.athleteDetail(athlete.id).href}`)
                     }
-                    size={'sm'}
+                    size={"sm"}
                   >
-                    <EyeIcon className='w-3.5' />
+                    <EyeIcon className="w-3.5" />
                   </Button>
                 </div>
               </td>
@@ -140,20 +137,20 @@ export default AthleteTable;
 const AthleteTableHeader: React.FC = () => {
   return (
     <thead>
-      <tr className='border-l border-r bg-gray-50'>
-        <th className='px-4 py-4 text-sm font-semibold text-left text-primary'>
+      <tr className="border-l border-r bg-gray-50">
+        <th className="px-4 py-4 text-sm font-semibold text-left text-primary">
           Name
         </th>
-        <th className='px-4 py-4 text-sm font-semibold text-left text-primary'>
+        <th className="px-4 py-4 text-sm font-semibold text-left text-primary">
           Phone
         </th>
-        <th className='px-4 py-4 text-sm font-semibold text-left text-primary'>
+        <th className="px-4 py-4 text-sm font-semibold text-left text-primary">
           Gender
         </th>
-        <th className='px-4 py-4 text-sm font-semibold text-left text-primary'>
+        <th className="px-4 py-4 text-sm font-semibold text-left text-primary">
           Status
         </th>
-        <th className='px-4 py-4 text-sm font-semibold text-left text-primary'>
+        <th className="px-4 py-4 text-sm font-semibold text-left text-primary">
           Actions
         </th>
       </tr>

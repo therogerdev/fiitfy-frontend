@@ -1,19 +1,19 @@
 import { apiClient } from "@/config/axios.config";
 import { Athlete, ClientError, Membership, MembershipResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { CreditCard } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 import { EndpointType } from "@/types/api";
-import { format, isBefore } from "date-fns";
-import { Badge } from "../ui/badge";
-import { AthleteDetailCardLoading } from "./AthleteDetailCardLoading";
 import { AxiosError } from "axios";
-import { Button } from "../ui/button";
+import { format } from "date-fns";
 import { useNavigate } from "react-router";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { AthleteDetailCardLoading } from "./AthleteDetailCardLoading";
 interface AthleteMembershipProps {
   id: string;
-  athlete?: Athlete
+  athlete?: Athlete;
 }
 
 // Fetches the membership information for a specific athlete
@@ -26,8 +26,11 @@ const fetchMembershipInformation = async (
   return response.data;
 };
 
-const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id, athlete }) => {
-  const navigate = useNavigate()
+const AthleteMembership: React.FC<AthleteMembershipProps> = ({
+  id,
+  athlete,
+}) => {
+  const navigate = useNavigate();
   const {
     data: membershipResponse,
     error,
@@ -52,15 +55,7 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id, athlete }) =>
 
   const membership: Membership | undefined = membershipResponse?.data;
 
-  const isMembershipExpired = (startDate?: Date, endDate?: Date): boolean => {
-    if (!startDate || !endDate) {
-      return false; // If dates are undefined, consider it as not expired (or handle as needed)
-    }
-    const now = new Date();
-    return isBefore(endDate, now); // Checks if the endDate is before the current date
-  };
-
-
+  console.log(membership);
 
   if (!membership)
     return (
@@ -74,13 +69,18 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id, athlete }) =>
           <p className="text-sm font-light text-primary">
             {"There is no membership associate to this account."}
           </p>
-          <Button 
-          onClick={() => navigate(`/athlete/${athlete?.id}/programs`, {
-            state: {
-              customerEmail: athlete?.email
+          <Button
+            onClick={() =>
+              navigate(`/athlete/${athlete?.id}/programs`, {
+                state: {
+                  customerEmail: athlete?.email,
+                },
+              })
             }
-          })}
-          variant={"outline"}>Add Membership</Button>
+            variant={"outline"}
+          >
+            Add Membership
+          </Button>
         </CardContent>
       </Card>
     );
@@ -91,7 +91,7 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id, athlete }) =>
         <CardTitle className="font-semibold text-md text-primary">
           Membership Information
         </CardTitle>
-        <CreditCard className="w-4 h-4 text-muted-foreground" />
+        <CalendarDays className="w-4 h-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
         <div>
@@ -106,10 +106,7 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({ id, athlete }) =>
               <div className="px-1 py-2 sm:grid sm:grid-cols-3 sm:gap-2 sm:px-0">
                 <dt className="font-semibold text-primary text-sm/6">Status</dt>
                 <dd className="mt-1 text-secondary-foreground text-sm/6 sm:col-span-2 sm:mt-0">
-                  {isMembershipExpired(
-                    membership?.startDate,
-                    membership?.endDate
-                  ) ? (
+                  {membership.isExpired ? (
                     <Badge variant={"destructive"}>Expired</Badge>
                   ) : (
                     <Badge>Active</Badge>
