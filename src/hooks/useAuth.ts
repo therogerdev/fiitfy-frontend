@@ -1,5 +1,6 @@
 import { getUserDetail } from '@/services/auth';
 import { userAtom } from '@/store/user';
+import { Role } from '@/types/user';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -21,12 +22,10 @@ export const useAuth = () => {
           const userDetails = await getUserDetail(token);
           setUser(userDetails);
         } else if (!publicRoutes.includes(location.pathname)) {
-          // Only navigate to /login if not on a public route
           navigate('/login');
         }
       } catch (error) {
         console.error('Error fetching user details:', error);
-        // Redirect only if not on a public route
         if (!publicRoutes.includes(location.pathname)) {
           navigate('/login');
         }
@@ -36,7 +35,16 @@ export const useAuth = () => {
     };
 
     fetchUserDetail();
-  }, [navigate, location.pathname]); // Remove publicRoutes from dependencies
+  }, [navigate, location.pathname, setUser]);
 
-  return { user, loading };
+  // Authorization utility
+  const isAuthorized = (requiredRoles: Role) => {
+    if (!user || !user.role) return false;
+
+    // If only one role is required, convert to array for consistent handling
+    const rolesArray = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+    return rolesArray.includes(user.role);
+  };
+
+  return { user, loading, isAuthorized };
 };
