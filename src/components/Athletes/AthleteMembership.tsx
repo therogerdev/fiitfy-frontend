@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { CalendarDays } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
+import { useToast } from "@/hooks/use-toast";
 import { EndpointType } from "@/types/api";
 import { AxiosError } from "axios";
-import { format } from "date-fns";
+import { differenceInCalendarDays, format } from "date-fns";
 import { useNavigate } from "react-router";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -31,6 +32,7 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({
   athlete,
 }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const {
     data: membershipResponse,
     error,
@@ -54,8 +56,6 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({
   }
 
   const membership: Membership | undefined = membershipResponse?.data;
-
-  console.log(membership);
 
   if (!membership)
     return (
@@ -84,6 +84,25 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({
         </CardContent>
       </Card>
     );
+
+  // TODO: Make it generic and useEffect so that warning show up automatically
+  const triggerRenewWarning = () => {
+    if (
+      differenceInCalendarDays(new Date(membership.endDate), new Date()) > 7
+    ) {
+      toast({
+        title: "Membership is about to expire",
+        description: "Please renew your membership as soon as possible.",
+        variant: "default",
+
+        action: (
+          <Button className="mt-2" variant={"default"}>
+            Renew Membership
+          </Button>
+        ),
+      });
+    }
+  };
 
   return (
     <Card>
@@ -125,8 +144,22 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({
                 <dt className="font-semibold text-primary text-sm/6">
                   End Date
                 </dt>
-                <dd className="mt-1 text-secondary-foreground text-sm/6 sm:col-span-2 sm:mt-0">
+                <dd className="flex items-center justify-between mt-1 text-secondary-foreground text-sm/6 sm:col-span-2 sm:mt-0">
                   {format(new Date(membership?.endDate || ""), "PP")}
+                  <Button
+                    size={"sm"}
+                    // onClick={() =>
+                    //   navigate(`/athlete/${athlete?.id}/programs`, {
+                    //     state: {
+                    //       customerEmail: athlete?.email,
+                    //     },
+                    //   })
+                    // }
+                    onClick={triggerRenewWarning}
+                    variant={"default"}
+                  >
+                    Renew Membership
+                  </Button>
                 </dd>
               </div>
             </dl>
