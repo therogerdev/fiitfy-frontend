@@ -19,6 +19,7 @@ import Login from "./pages/LoginPage";
 import ProgramDetailPage from "./pages/ProgramDetailPage";
 import RecoverPasswordPage from "./pages/RecoverPasswordPage";
 import AthletePlans from "./components/Athletes/AthletePlans";
+import { Role } from "./types";
 
 const AppRoutes = () => {
   return (
@@ -68,6 +69,10 @@ const AppRoutes = () => {
           path="/checkout/success"
           element={<div>You membership was confirmed! </div>}
         />
+        <Route
+          path="/unauthorized"
+          element={<div>You have no authorization to access this page!! </div>}
+        />
         <Route path={appLink.classes().href} element={<ClassPage />}>
           <Route
             path={appLink.classDetail(":id", "").href}
@@ -83,7 +88,11 @@ const AppRoutes = () => {
         />
         <Route
           path={appLink.athletes().href}
-          element={<AthleteAreaPage />}
+          element={
+            <ProtectedRoute allowedRoles={[Role.ADMIN, Role.COACH]}>
+              <AthleteAreaPage />
+            </ProtectedRoute>
+          }
         ></Route>
         <Route
           path={appLink.athleteDetail(":id").href}
