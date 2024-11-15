@@ -14,12 +14,12 @@ import { Class, ClassResponse } from "@/types";
 import { EndpointType } from "@/types/api";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
-import { addDays, format } from "date-fns";
+import { addDays, endOfToday, format, startOfToday } from "date-fns";
 import { EyeIcon, PlusCircle, Timer, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-const breadcrumbLinks = [appLink.classes];
+const breadcrumbLinks = [appLink.classes()];
 
 const ClassPage = () => {
   return (
@@ -36,7 +36,14 @@ export default ClassPage;
 
 // Fetch classes from the API
 const fetchAllClasses = async (): Promise<ClassResponse> => {
-  const response = await apiClient.get(`/${EndpointType.Class}/list`);
+  const today = {
+    start: startOfToday().toISOString(),
+    end: endOfToday().toISOString(),
+  };
+
+  const response = await apiClient.get(
+    `/${EndpointType.Class}/list?startTime=${today.start}&endTime=${today.end}`
+  );
   return response.data;
 };
 
