@@ -12,6 +12,7 @@ export enum EndpointType {
   Membership = 'stripe/membership',
   Checkout = 'stripe/checkout',
   Enroll = 'enroll',
+  Attendance = 'attendance',
   Movement = 'movement',
   Box = 'box', // For gym/box entity
   Login = 'login',

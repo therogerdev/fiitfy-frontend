@@ -26,6 +26,9 @@ import { EndpointType } from "@/types/api";
 import { ClassEnrollAthlete } from "./ClassEnrollAthlete";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/config/queryClient";
+import { useAuth } from "@/hooks/useAuth";
+import { useCheckIn } from "@/hooks/useCheckIn";
+import { Role } from "@/types/user";
 
 interface ClassEnrollmentsProps {
   classId: string;
@@ -53,6 +56,7 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
   capacity,
 }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const {
     data: enrollment,
     error,
@@ -62,6 +66,8 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
     queryFn: () => fetchEnrollment({ classId: classId, status: "canceled" }),
     enabled: !!classId,
   });
+
+  const { mutate: checkInMutation } = useCheckIn();
 
   // Mutation to cancel enrollment
   const cancelEnrollmentMutation = useMutation<
@@ -101,6 +107,13 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
     cancelEnrollmentMutation.mutate(enrollmentId);
   };
 
+  // Function to check if user.athlete.id is on the enrollment list
+  const isUserEnrolled = (userId: string) => {
+    return enrollment?.data?.some(
+      (enrollmentItem) => enrollmentItem.athleteId === userId
+    );
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -108,7 +121,11 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+  const userEnrollment = isUserEnrolled(user?.athlete?.id || "");
 
+  console.log("is enrolled", isUserEnrolled(user?.athlete.id as string));
+  console.log(user?.athlete);
+  console.log(enrollment?.data);
   return (
     <Card className="mt-2">
       <CardHeader>
@@ -139,7 +156,7 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
         {(enrollment?.data?.length || 0) > 0 && (
           <div className="grid grid-cols-5 p-0 italic font-semibold">
             <div className="col-span-2 ml-10">Athlete</div>
-            <div className="col-span-1">Enrollment</div>
+            <div className="col-span-1">Status</div>
             <div className="col-span-1">Check-in</div>
             <div className="col-span-1">Cancel</div>
           </div>
@@ -184,25 +201,58 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
                   </Badge>
                 </div>
                 <div className="text-sm">
-                  {enrollmentItem.isCheckedIn ? (
-                    <Badge variant="destructive" className="cursor-pointer">
-                      Check-out
-                    </Badge>
+                  {userEnrollment &&
+                  user?.athlete?.id === enrollmentItem.athleteId ? (
+                    enrollmentItem.isCheckedIn ? (
+                      <Badge className="bg-green-700">Checked-in</Badge>
+                    ) : (
+                      <Button
+                        size="sm"
+                        onClick={() => checkInMutation(enrollmentItem.id)}
+                        // disabled={isCheckInLoading}
+                      >
+                        Check-in
+                      </Button>
+                    )
+                  ) : user?.role === "ADMIN" ? ( // Admin-specific functionality
+                    enrollmentItem.isCheckedIn ? (
+                      <Badge className="bg-green-700">Checked-in</Badge>
+                    ) : (
+                      <Button
+                        size="sm"
+                        onClick={() => checkInMutation(enrollmentItem.id)}
+                        // disabled={isCheckInLoading}
+                      >
+                        Check-in
+                      </Button>
+                    )
                   ) : (
-                    <Badge variant="secondary" className="cursor-pointer">
-                      Check-in
-                    </Badge>
+                    <Badge variant={"outline"}>Not Checked-in</Badge>
                   )}
                 </div>
                 <div className="col-span-1">
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleCancel(enrollmentItem.id)}
-                    disabled={cancelEnrollmentMutation.isPending}
-                  >
-                    Cancel
-                  </Button>
+                  {
+                    userEnrollment &&
+                    user?.athlete?.id === enrollmentItem.athleteId ? (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleCancel(enrollmentItem.id)}
+                        disabled={cancelEnrollmentMutation.isPending}
+                      >
+                        Cancel
+                      </Button>
+                    ) : user?.role === Role.ADMIN ? ( // Admin-specific functionality
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleCancel(enrollmentItem.id)}
+                        disabled={cancelEnrollmentMutation.isPending}
+                      >
+                        Admin Cancel
+                      </Button>
+                    ) : null // Show nothing for non-enrolled users
+                  }
                 </div>
               </div>
             ))}

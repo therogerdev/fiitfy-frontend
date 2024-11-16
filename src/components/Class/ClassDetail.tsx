@@ -18,7 +18,7 @@ const fetchClassDetail = async (id: string) => {
 
 const ClassDetail = () => {
   const { id } = useParams();
-  const [isOpen, setIsOpen] = useState(true); // Start open if you want
+  const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 
   const {
