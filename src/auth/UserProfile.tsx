@@ -10,6 +10,8 @@ const UserProfile = () => {
   if (!user) {
     return <div>No user found. Please log in.</div>;
   }
+
+
   return (
     <div>
       <h1>User Profile</h1>

@@ -1,15 +1,8 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-
-import {
-  CaretSortIcon,
-  CheckIcon,
-  PlusCircledIcon,
-} from '@radix-ui/react-icons';
-
-import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover';
-
-import { cn } from '@/lib/utils';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { cn } from "@/lib/utils";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
   DialogContent,
@@ -17,11 +10,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@ui/dialog';
-import React from 'react';
-import { Button } from '../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+} from "@ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
+import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
   Command,
   CommandEmpty,
@@ -30,141 +23,85 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '../ui/command';
+} from "../ui/command";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-
-const groups = [
-  {
-    label: 'Personal Account',
-    teams: [
-      {
-        label: 'Hybrid Theory HQ',
-        value: 'personal',
-      },
-    ],
-  },
-  {
-    label: 'Teams',
-    teams: [
-      {
-        label: 'Acme Inc.',
-        value: 'acme-inc',
-      },
-      {
-        label: 'Monsters Inc.',
-        value: 'monsters',
-      },
-    ],
-  },
-];
-
-type Team = (typeof groups)[number]['teams'][number];
-
-type PopoverTriggerProps = React.ComponentPropsWithoutRef<
-  typeof PopoverTrigger
->;
-
-type TeamSwitcherProps = PopoverTriggerProps;
+} from "../ui/select";
 
 export default function BranchSwitcher({
   className,
-}: TeamSwitcherProps) {
+}: React.ComponentPropsWithoutRef<typeof PopoverTrigger>) {
   const [open, setOpen] = React.useState(false);
-  const [showNewTeamDialog, setShowNewTeamDialog] =
-    React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(
-    groups[0].teams[0]
-  );
+  const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
+
+  const { user } = useAuth();
 
   return (
-    <Dialog
-      open={showNewTeamDialog}
-      onOpenChange={setShowNewTeamDialog}
-    >
+    <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
-            variant='outline'
-            role='combobox'
+            variant="outline"
+            role="combobox"
             aria-expanded={open}
-            aria-label='Select a team'
+            aria-label="Select a team"
             className={cn(
-              'w-[200px] justify-between hidden sm:flex',
+              "w-[200px] justify-between hidden sm:flex",
               className
             )}
           >
-            <Avatar className='w-5 h-5 mr-2'>
+            <Avatar className="w-5 h-5 mr-2">
               <AvatarImage
-                src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
-                alt={selectedTeam.label}
-                className='grayscale'
+                src={`https://avatar.vercel.sh/${
+                  user?.Box?.name || "default"
+                }.png`}
+                alt={user?.Box?.name || "Default Box"}
+                className="grayscale"
               />
               <AvatarFallback>SC</AvatarFallback>
             </Avatar>
-            {selectedTeam.label}
-            <CaretSortIcon className='w-4 h-4 ml-auto opacity-50 shrink-0' />
+            {user?.Box?.name || "No Box Assigned"}
+            <CaretSortIcon className="w-4 h-4 ml-auto opacity-50 shrink-0" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className='w-[200px] p-0 '>
+        <PopoverContent className="w-[200px] p-0 ">
           <Command>
-            <CommandInput placeholder='Search team...' />
+            <CommandInput placeholder="Search box..." />
             <CommandList>
-              <CommandEmpty>No team found.</CommandEmpty>
-              {groups.map((group) => (
-                <CommandGroup key={group.label} heading={group.label}>
-                  {group.teams.map((team) => (
-                    <CommandItem
-                      key={team.value}
-                      onSelect={() => {
-                        setSelectedTeam(team);
-                        setOpen(false);
-                      }}
-                      className='text-sm'
-                    >
-                      <Avatar className='w-5 h-5 mr-2'>
-                        <AvatarImage
-                          src={`https://avatar.vercel.sh/${team.value}.png`}
-                          alt={team.label}
-                          className='grayscale'
-                        />
-                        <AvatarFallback>SC</AvatarFallback>
-                      </Avatar>
-                      {team.label}
-                      <CheckIcon
-                        className={cn(
-                          'ml-auto h-4 w-4',
-                          selectedTeam.value === team.value
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ))}
-            </CommandList>
-            <CommandSeparator />
-            <CommandList>
-              <CommandGroup>
-                <DialogTrigger asChild>
-                  <CommandItem
-                    onSelect={() => {
-                      setOpen(false);
-                      setShowNewTeamDialog(true);
-                    }}
-                  >
-                    <PlusCircledIcon className='w-5 h-5 mr-2' />
-                    Create Team
-                  </CommandItem>
-                </DialogTrigger>
+              <CommandEmpty>No branch found.</CommandEmpty>
+              <CommandGroup heading="Your Box">
+                <CommandItem
+                  key={user?.Box?.name || "default"}
+                  onSelect={() => {
+                    setOpen(false);
+                  }}
+                  className="text-sm"
+                >
+                  <Avatar className="w-5 h-5 mr-2">
+                    <AvatarImage
+                      src={`https://avatar.vercel.sh/${
+                        user?.Box?.name || "default"
+                      }.png`}
+                      alt={user?.Box?.name || "Default Box"}
+                      className="grayscale"
+                    />
+                    <AvatarFallback>SC</AvatarFallback>
+                  </Avatar>
+                  {user?.Box?.name || "No Box Assigned"}
+                  <CheckIcon
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      user?.Box?.name ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </CommandItem>
               </CommandGroup>
             </CommandList>
+            <CommandSeparator />
           </Command>
         </PopoverContent>
       </Popover>
@@ -176,27 +113,27 @@ export default function BranchSwitcher({
           </DialogDescription>
         </DialogHeader>
         <div>
-          <div className='py-2 pb-4 space-y-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='name'>Team name</Label>
-              <Input id='name' placeholder='Acme Inc.' />
+          <div className="py-2 pb-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Team name</Label>
+              <Input id="name" placeholder="Acme Inc." />
             </div>
-            <div className='space-y-2'>
-              <Label htmlFor='plan'>Subscription plan</Label>
+            <div className="space-y-2">
+              <Label htmlFor="plan">Subscription plan</Label>
               <Select>
                 <SelectTrigger>
-                  <SelectValue placeholder='Select a plan' />
+                  <SelectValue placeholder="Select a plan" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='free'>
-                    <span className='font-medium'>Free</span> -{' '}
-                    <span className='text-muted-foreground'>
+                  <SelectItem value="free">
+                    <span className="font-medium">Free</span> -{" "}
+                    <span className="text-muted-foreground">
                       Trial for two weeks
                     </span>
                   </SelectItem>
-                  <SelectItem value='pro'>
-                    <span className='font-medium'>Pro</span> -{' '}
-                    <span className='text-muted-foreground'>
+                  <SelectItem value="pro">
+                    <span className="font-medium">Pro</span> -{" "}
+                    <span className="text-muted-foreground">
                       $9/month per user
                     </span>
                   </SelectItem>
@@ -206,13 +143,10 @@ export default function BranchSwitcher({
           </div>
         </div>
         <DialogFooter>
-          <Button
-            variant='outline'
-            onClick={() => setShowNewTeamDialog(false)}
-          >
+          <Button variant="outline" onClick={() => setShowNewTeamDialog(false)}>
             Cancel
           </Button>
-          <Button type='submit'>Continue</Button>
+          <Button type="submit">Continue</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -67,7 +67,7 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
     enabled: !!classId,
   });
 
-  const { mutate: checkInMutation } = useCheckIn();
+  const { mutate: checkInMutation, isPending } = useCheckIn();
 
   // Mutation to cancel enrollment
   const cancelEnrollmentMutation = useMutation<
@@ -201,34 +201,18 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
                   </Badge>
                 </div>
                 <div className="text-sm">
-                  {userEnrollment &&
-                  user?.athlete?.id === enrollmentItem.athleteId ? (
-                    enrollmentItem.isCheckedIn ? (
-                      <Badge className="bg-green-700">Checked-in</Badge>
-                    ) : (
-                      <Button
-                        size="sm"
-                        onClick={() => checkInMutation(enrollmentItem.id)}
-                        // disabled={isCheckInLoading}
-                      >
-                        Check-in
-                      </Button>
-                    )
-                  ) : user?.role === "ADMIN" ? ( // Admin-specific functionality
-                    enrollmentItem.isCheckedIn ? (
-                      <Badge className="bg-green-700">Checked-in</Badge>
-                    ) : (
-                      <Button
-                        size="sm"
-                        onClick={() => checkInMutation(enrollmentItem.id)}
-                        // disabled={isCheckInLoading}
-                      >
-                        Check-in
-                      </Button>
-                    )
-                  ) : (
-                    <Badge variant={"outline"}>Not Checked-in</Badge>
-                  )}
+                  {enrollmentItem.isCheckedIn ? (
+                    <Badge className="bg-green-700">Checked-in</Badge>
+                  ) : user?.athlete?.id === enrollmentItem.athleteId ||
+                    user?.role === "ADMIN" ? (
+                    <Button
+                      size="sm"
+                      onClick={() => checkInMutation(enrollmentItem.id)}
+                      disabled={isPending}
+                    >
+                      Check-in
+                    </Button>
+                  ) : null}
                 </div>
                 <div className="col-span-1">
                   {

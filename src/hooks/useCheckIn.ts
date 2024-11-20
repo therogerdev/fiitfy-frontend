@@ -3,22 +3,15 @@ import { AxiosError } from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/config/axios.config";
 import { EndpointType } from "@/types/api";
-
-interface CheckInResponse {
-  success: boolean;
-  message: string;
-}
-
-interface CheckInError {
-  error: string;
-}
+import { ClassEnrollment, ClientError } from "@/types";
+import { queryClient } from "@/config/queryClient";
 
 export const useCheckIn = () => {
   const { toast } = useToast();
 
   const mutation = useMutation<
-    CheckInResponse,
-    AxiosError<CheckInError>,
+    ClassEnrollment,
+    AxiosError<ClientError>,
     string
   >({
     mutationFn: async (enrollmentId: string) => {
@@ -28,10 +21,14 @@ export const useCheckIn = () => {
       return response.data;
     },
     onSuccess: (data) => {
+     
       toast({
         title: "Check-In Successful",
-        description: data.message,
+        description: `${data.athlete.firstName} check-in successful!`,
         variant: "default",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["enrollment"],
       });
     },
     onError: (error) => {
@@ -44,5 +41,7 @@ export const useCheckIn = () => {
     },
   });
 
-  return mutation;
+  const isPending = mutation.isPending || mutation.isError;
+
+  return { ...mutation, isPending };
 };
