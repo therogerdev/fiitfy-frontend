@@ -54,6 +54,11 @@ const ClassDetail = () => {
     }
   };
 
+  const onCloseModal = () => {
+    navigate(-1); // Go back when the dialog closes
+    setIsOpen(false);
+  };
+
   return (
     <Modal
       size="lg"
@@ -61,13 +66,8 @@ const ClassDetail = () => {
       description=""
       open={isOpen}
       onOpenChange={handleDialogChange}
-      onClose={() => {
-        setIsOpen(!open);
-        navigate(-1);
-        queryClient.invalidateQueries({
-          queryKey: ["classList"],
-        });
-      }}
+      onClickOutside={onCloseModal}
+      onClose={onCloseModal}
     >
       <ClassInfo
         id={classDetail.data.id}

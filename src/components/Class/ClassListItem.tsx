@@ -33,11 +33,13 @@ const ClassListItem: React.FC<ClassListItemProps> = ({ classInfo }) => {
             {classInfo.coach?.lastName}
           </div>
         </div>
-        {isClassFull && (
-          <div className="">
-            <Badge variant={"destructive"}>Class is full</Badge>
-          </div>
-        )}
+        <div className="flex flex-col">
+          {isClassFull && (
+            <div className="">
+              <Badge variant={"destructive"}>Class is full</Badge>
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex items-center justify-between text-xs text-gray-500">
         <div className="flex mr-3 gap-x-1">

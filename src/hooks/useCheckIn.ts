@@ -1,10 +1,10 @@
+import { apiClient } from "@/config/axios.config";
+import { queryClient } from "@/config/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { ClassEnrollment, ClientError } from "@/types";
+import { EndpointType } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useToast } from "@/hooks/use-toast";
-import { apiClient } from "@/config/axios.config";
-import { EndpointType } from "@/types/api";
-import { ClassEnrollment, ClientError } from "@/types";
-import { queryClient } from "@/config/queryClient";
 
 export const useCheckIn = () => {
   const { toast } = useToast();
@@ -20,11 +20,11 @@ export const useCheckIn = () => {
       );
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
      
       toast({
         title: "Check-In Successful",
-        description: `${data.athlete.firstName} check-in successful!`,
+        description: `Check-in successful!`,
         variant: "default",
       });
       queryClient.invalidateQueries({
