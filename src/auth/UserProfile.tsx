@@ -11,7 +11,7 @@ const UserProfile = () => {
     return <div>No user found. Please log in.</div>;
   }
 
-  console.log(user.role);
+
 
   return (
     <div>
