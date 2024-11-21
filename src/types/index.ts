@@ -43,24 +43,17 @@ export enum WorkoutType {
   Skill = "Skill",
 }
 
-export interface Box {
+export type Box = {
   id: string;
   name: string;
-  nickname?: string;
-  street?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  country?: string;
-  email?: string;
-  website?: string;
-  phone?: string;
-  headquarter: boolean;
-  headquarterBoxId?: string;
-  branches: Box[];
-  headquarterBox?: Box;
-  Program: Programs[];
-}
+  location: string;
+  createdAt: string; 
+  updatedAt: string; 
+  isHeadquarter: boolean;
+  headquarterBoxId?: string | null;
+  users: User[]; 
+  classes: Class[]; 
+};
 
 export interface User {
   id: string;
@@ -74,6 +67,8 @@ export interface User {
   stripeCustomerId?: string;
   createdAt: Date;
   updatedAt: Date;
+  Box: Box;
+  BoxId: string;
 }
 
 export interface Athlete {

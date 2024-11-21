@@ -1,4 +1,4 @@
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from "@/hooks/useAuth";
 
 const UserProfile = () => {
   const { user, loading } = useAuth();
@@ -10,11 +10,15 @@ const UserProfile = () => {
   if (!user) {
     return <div>No user found. Please log in.</div>;
   }
+
+
+
   return (
     <div>
       <h1>User Profile</h1>
       <p>Username: {user.username}</p>
       <p>Email: {user.email}</p>
+      <p>Type: {user.role}</p>
       {/* Display other user information as needed */}
     </div>
   );

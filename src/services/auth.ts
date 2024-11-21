@@ -1,5 +1,25 @@
-import { apiClient } from '@/config/axios.config';
-import { EndpointType } from '@/types/api';
+import { apiClient } from "@/config/axios.config";
+import { User } from "@/types";
+import { EndpointType } from "@/types/api";
+
+export const fetchUserDetail = async (token: string): Promise<User> => {
+  try {
+    const userDetails = await getUserDetail(token);
+
+    const completeUser: User = {
+      ...userDetails,
+      createdAt: userDetails.createdAt || new Date().toISOString(),
+      updatedAt: userDetails.updatedAt || new Date().toISOString(),
+      Box: userDetails.Box || null,
+      BoxId: userDetails.BoxId || null,
+    };
+
+    return completeUser;
+  } catch (error) {
+    console.error("Failed to fetch user details:", error);
+    throw error;
+  }
+};
 
 // User login
 export const loginUser = async (email: string, password: string) => {
@@ -19,7 +39,6 @@ export const signupUser = async (email: string, password: string) => {
   return response.data;
 };
 
-// Get user details
 export const getUserDetail = async (token: string) => {
   const response = await apiClient.get(EndpointType.Me, {
     headers: {
@@ -29,12 +48,11 @@ export const getUserDetail = async (token: string) => {
   return response.data;
 };
 
-
 export const logoutRequest = async () => {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error('No token found');
+      throw new Error("No token found");
     }
 
     const response = await apiClient.post(EndpointType.Logout, {
@@ -43,11 +61,11 @@ export const logoutRequest = async () => {
       },
     });
 
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
 
-    return response.data
+    return response.data;
   } catch (error) {
-    console.error('Error during logout:', error);
-    throw new Error('Failed to logout. Please try again');
+    console.error("Error during logout:", error);
+    throw new Error("Failed to logout. Please try again");
   }
 };

@@ -1,9 +1,9 @@
-import { getUserDetail } from '@/services/auth';
-import { userAtom } from '@/store/user';
-import { Role } from '@/types/user';
-import { useAtom } from 'jotai';
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { fetchUserDetail } from "@/services/auth";
+import { userAtom } from "@/store/user";
+import { Role } from "@/types";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const useAuth = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -11,38 +11,45 @@ export const useAuth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isPublicRoute = (path: string) => {
+    const publicRoutes = ["/login", "/recover-password"];
+    return publicRoutes.includes(path);
+  };
+
   useEffect(() => {
-    const publicRoutes = ['/login', '/recover-password'];
+    const initAuth = async () => {
+      const token = localStorage.getItem("token");
 
-    const fetchUserDetail = async () => {
-      try {
-        const token = localStorage.getItem('token');
-
-        if (token) {
-          const userDetails = await getUserDetail(token);
-          setUser(userDetails);
-        } else if (!publicRoutes.includes(location.pathname)) {
-          navigate('/login');
+      if (!token) {
+        if (!isPublicRoute(location.pathname)) {
+          navigate("/login");
         }
-      } catch (error) {
-        console.error('Error fetching user details:', error);
-        if (!publicRoutes.includes(location.pathname)) {
-          navigate('/login');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userDetails = await fetchUserDetail(token);
+        setUser(userDetails);
+      } catch {
+        if (!isPublicRoute(location.pathname)) {
+          navigate("/login", {
+            state: { error: "Session expired. Please login again." },
+          });
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserDetail();
+    initAuth();
   }, [navigate, location.pathname, setUser]);
 
-  // Authorization utility
-  const isAuthorized = (requiredRoles: Role) => {
+  const isAuthorized = (requiredRoles: Role | Role[]) => {
     if (!user || !user.role) return false;
-
-    // If only one role is required, convert to array for consistent handling
-    const rolesArray = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+    const rolesArray = Array.isArray(requiredRoles)
+      ? requiredRoles
+      : [requiredRoles];
     return rolesArray.includes(user.role);
   };
 

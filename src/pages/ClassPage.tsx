@@ -8,7 +8,7 @@ import { appLink } from "@/config/links";
 import { useAuth } from "@/hooks/useAuth";
 import { useFetchClasses } from "@/hooks/useFetchClasses";
 import { selectedDateAtom } from "@/store/class";
-import { Role } from "@/types/user";
+import { Role } from "@/types";
 import { useAtomValue } from "jotai";
 import { PlusCircle } from "lucide-react";
 import { Outlet, useNavigate } from "react-router-dom";

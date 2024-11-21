@@ -1,4 +1,4 @@
-import { User } from '@/types/user';
+import { User } from '@/types/index';
 import { atom } from 'jotai';
 
 export const userAtom = atom<User | null>(null);

@@ -1,7 +1,7 @@
 import { appLink } from "@/config/links";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
-import { Role } from "@/types/user";
+import { Role } from "@/types/index";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 
@@ -36,7 +36,7 @@ const Navbar = () => {
         </Link>
       ) : (
         <Link
-          to={`${appLink.athletes().href}/${user?.athlete.id}`}
+          to={`${appLink.athletes().href}/${user?.athlete?.id}`}
           className={cn(
             "transition-colors hover:text-foreground/80",
             pathname.startsWith(appLink.athletes().href)

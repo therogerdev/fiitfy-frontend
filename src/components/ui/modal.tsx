@@ -1,7 +1,9 @@
+import {
+  DialogDescription
+} from "@radix-ui/react-dialog";
 import React from "react";
-import { Sheet, SheetContent, SheetHeader } from "./sheet";
-import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { DialogProps } from "vaul";
+import { Sheet, SheetContent, SheetHeader } from "./sheet";
 
 type IModalProps = {
   size: "sm" | "md" | "lg";
@@ -11,6 +13,7 @@ type IModalProps = {
   open?: DialogProps["open"];
   onClose?: () => void;
   onOpenChange?: DialogProps["onOpenChange"];
+  onClickOutside?: () => void;
 };
 
 const Modal = ({
@@ -21,12 +24,18 @@ const Modal = ({
   onOpenChange,
   open,
   onClose,
+  onClickOutside,
 }: IModalProps) => {
   return (
     <Sheet open={open} onOpenChange={onOpenChange} modal>
-      <DialogTitle></DialogTitle>
+      {/* <DialogTitle></DialogTitle> */}
       <DialogDescription></DialogDescription>
-      <SheetContent onClose={onClose} size={size}>
+      <SheetContent
+        onClickOutside={onClickOutside}
+        onClose={onClose}
+        size={size}
+      
+      >
         <SheetHeader>
           <header className="flex items-center justify-between px-6 py-4">
             <div>
