@@ -3,12 +3,13 @@ import { selectedAthleteIdAtom } from "@/store/class";
 import { EndpointType } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useEffect } from "react";
+import { useParams } from "react-router";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Modal from "../ui/modal";
 import { ClassEnrollments } from "./ClassEnrollments";
 import { ClassInfo } from "./ClassInfo";
-import { queryClient } from "@/config/queryClient";
+import { ClassDetailCoach } from "./ClassDetailCoach";
 
 const fetchClassDetail = async (id: string) => {
   const response = await apiClient.get(`${EndpointType.Class}/${id}`);
@@ -18,8 +19,6 @@ const fetchClassDetail = async (id: string) => {
 
 const ClassDetail = () => {
   const { id } = useParams();
-  const [isOpen, setIsOpen] = useState(true);
-  const navigate = useNavigate();
 
   const {
     data: classDetail,
@@ -43,50 +42,49 @@ const ClassDetail = () => {
     return <Modal size="lg">Error: {error.message}</Modal>;
   }
 
-  // handle close modal
-  const handleDialogChange = (open: boolean) => {
-    setIsOpen(open);
-    if (!open) {
-      queryClient.invalidateQueries({
-        queryKey: ["classList"],
-      });
-      navigate(-1); // Go back when the dialog closes
-    }
-  };
-
-  const onCloseModal = () => {
-    navigate(-1); // Go back when the dialog closes
-    setIsOpen(false);
-  };
-
   return (
-    <Modal
-      size="lg"
-      title={classDetail.data.name}
-      description=""
-      open={isOpen}
-      onOpenChange={handleDialogChange}
-      onClickOutside={onCloseModal}
-      onClose={onCloseModal}
-    >
-      <ClassInfo
-        id={classDetail.data.id}
-        className={classDetail.data.name}
-        description={classDetail.data.description}
-        date={classDetail.data.date}
-        time={classDetail.data.time}
-        duration={classDetail.data.duration}
-        coachId={classDetail.data.coachId}
-      />
-
-      <ClassEnrollments
-        classId={classDetail.data.id}
-        capacity={
-          classDetail.data.capacity - classDetail.data.activeEnrollments
-        }
-      />
-    </Modal>
+    <>
+      <ClassDetailLayout>
+        <div className="border-l lg:col-span-3 ">
+          <ClassDetailCoach coachId={classDetail.data.coachId} />
+        </div>
+        <div className="flex flex-col border-l border-r md:col-span-2 lg:col-span-6">
+          <ClassInfo
+            id={classDetail.data.id}
+            className={classDetail.data.name}
+            description={classDetail.data.description}
+            date={classDetail.data.date}
+            time={classDetail.data.time}
+            duration={classDetail.data.duration}
+          />
+          <div className="bg-white border-y">
+            <Card className="border-none rounded-none">
+              <CardHeader>
+                <CardTitle>Workout</CardTitle>
+              </CardHeader>
+              <CardContent></CardContent>
+            </Card>
+          </div>
+        </div>
+        <div className="overflow-hidden border-r md:col-span-2 lg:col-span-3">
+          <ClassEnrollments
+            classId={classDetail.data.id}
+            capacity={
+              classDetail.data.capacity - classDetail.data.activeEnrollments
+            }
+          />
+        </div>
+      </ClassDetailLayout>
+    </>
   );
 };
 
 export default ClassDetail;
+
+const ClassDetailLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="grid col-span-1 md:grid-cols-2 lg:grid-cols-12">
+      {children}
+    </div>
+  );
+};

@@ -8,7 +8,6 @@ import ContentLayout from "../layouts/content-layout";
 import BreadcrumbComponent from "../ui/BreadcrumbsComponent";
 import Spinner from "../ui/spinner";
 
-import AthleteDetailAttendanceSummary from "./AthleteDetailAttendanceSummary";
 import AthleteDetailClasses from "./AthleteDetailClasses";
 import { AthleteDetailInformation } from "./AthleteDetailInformation";
 import AthleteDetailSummaryCard from "./AthleteDetailSummaryCard";
@@ -54,7 +53,7 @@ const AthleteDetailPage = () => {
       />
 
       <main className="flex flex-col flex-1 gap-4 p-4 md:gap-8 md:p-8">
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 xl:grid-cols-3">
           <AthleteDetailInformation athlete={athlete} />
 
           {/* Membership */}
@@ -62,7 +61,7 @@ const AthleteDetailPage = () => {
           {/* Membership */}
 
           <AthleteDetailUpcoming athleteId={athlete?.id || ""} />
-          <AthleteDetailAttendanceSummary />
+          {/* <AthleteDetailAttendanceSummary /> */}
         </div>
         <div className="grid flex-grow md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
           <AthleteDetailClasses athleteId={athlete?.id} />

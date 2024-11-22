@@ -74,12 +74,12 @@ const AppRoutes = () => {
           element={<div>You have no authorization to access this page!! </div>}
         />
         <Route path={appLink.classes().href} element={<ClassPage />}>
-          <Route
-            path={appLink.classDetail(":id", "").href}
-            element={<ClassDetail />}
-          />
           <Route path={appLink.createClass.href} element={<ClassCreate />} />
         </Route>
+        <Route
+          path={appLink.classDetail(":id", "").href}
+          element={<ClassDetail />}
+        />
         <Route path={appLink.login.href} element={<Login />} />
         <Route path="*" element={<div>404 Not Found</div>} />
         <Route

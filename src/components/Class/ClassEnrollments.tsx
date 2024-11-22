@@ -16,8 +16,6 @@ import { PlusCircle } from "lucide-react";
 import { useMemo } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { ScrollArea } from "../ui/scroll-area";
-import { Separator } from "../ui/separator";
 import { ClassEnrollAthlete } from "./ClassEnrollAthlete";
 import ClassEnrollmentList from "./ClassEnrollmentList";
 interface ClassEnrollmentsProps {
@@ -33,7 +31,7 @@ const fetchEnrollment = async ({
   status?: string;
 }): Promise<ClassEnrollmentResponse> => {
   const response = await apiClient.get(
-    `${EndpointType.Enroll}/${classId}/list?status_not=${status?.toUpperCase()}`
+    `${EndpointType.Enroll}/${classId}/list?status_not=${status?.toUpperCase() || ""}`
   );
   return response.data;
 };
@@ -50,7 +48,7 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
     isLoading,
   } = useQuery<ClassEnrollmentResponse, AxiosError>({
     queryKey: ["enrollment", classId],
-    queryFn: () => fetchEnrollment({ classId, status: "canceled" }),
+    queryFn: () => fetchEnrollment({ classId }),
     enabled: !!classId,
   });
 
@@ -63,11 +61,14 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: Something went wrong!</div>;
 
+  console.log(enrollment?.data)
+
   return (
-    <Card className="mt-2">
+    <Card className="h-full border-none rounded-none">
+      {" "}
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col">
-          <CardTitle>Enrollments</CardTitle>
+          <CardTitle>Who's in?</CardTitle>
           <CardDescription>
             {capacity === 0 ? "Class is Full" : `${capacity} spots left`}
           </CardDescription>
@@ -89,29 +90,14 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        {(enrollment?.data?.length || 0) > 0 && (
-          <>
-            <div className="grid grid-cols-5 p-0 mb-1 italic font-semibold">
-              <div className="col-span-2 ml-10">Athlete</div>
-              <div className="col-span-1">Status</div>
-              <div className="col-span-1">Check-in</div>
-              <div className="col-span-1">Cancel</div>
-            </div>
-            <Separator />
-          </>
+        {enrollment?.data?.length === 0 ? (
+          <Label>No enrollments for this class</Label>
+        ) : (
+          <ClassEnrollmentList
+            classId={classId}
+            enrollments={enrollment?.data || []}
+          />
         )}
-        <ScrollArea className="mt-1 rounded-md max-h-60">
-          <div className="grid grid-cols-1 gap-2 pxß-4">
-            {enrollment?.data?.length === 0 ? (
-              <Label>No enrollments for this class</Label>
-            ) : (
-              <ClassEnrollmentList
-                classId={classId}
-                enrollments={enrollment?.data || []}
-              />
-            )}
-          </div>
-        </ScrollArea>
       </CardContent>
     </Card>
   );
