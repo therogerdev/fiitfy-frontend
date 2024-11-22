@@ -1,14 +1,29 @@
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useCancelCheckIn } from "@/hooks/useCancelCheckIn";
 import { useCancelEnrollment } from "@/hooks/useCancelEnrollment";
 import { useCheckIn } from "@/hooks/useCheckIn";
-import { getInitials } from "@/lib/utils";
 import { ClassEnrollment, ClassEnrollmentStatus, Role } from "@/types";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
+import { XIcon } from "lucide-react";
+import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 interface EnrollmentListProps {
   enrollments: ClassEnrollment[];
@@ -26,124 +41,186 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
 
   const isAdmin = user?.role === Role.ADMIN;
 
-  // Sort enrollments by status and createdAt
-  const sortedEnrollments = enrollments.sort((a, b) => {
-    const statusOrder = ["ENROLLED", "WAITLISTED", "CANCELED"];
+  // State for active tab
+  const [activeTab, setActiveTab] = useState<ClassEnrollmentStatus | "ALL">(
+    ClassEnrollmentStatus.ENROLLED
+  );
 
+  // Filter enrollments based on the active tab
+  const filteredEnrollments =
+    activeTab === "ALL"
+      ? enrollments
+      : enrollments.filter((enrollment) => enrollment.status === activeTab);
+
+  // Sort enrollments by status and createdAt
+  const sortedEnrollments = filteredEnrollments.sort((a, b) => {
+    const statusOrder = [
+      ClassEnrollmentStatus.ENROLLED,
+      ClassEnrollmentStatus.WAITLISTED,
+      ClassEnrollmentStatus.CANCELED,
+    ];
     const getStatusIndex = (status?: ClassEnrollmentStatus) =>
-      status ? statusOrder.indexOf(status) : -1; // Treat undefined status as lowest priority
+      status ? statusOrder.indexOf(status) : -1;
 
     if (a.status === b.status) {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     }
-
     return getStatusIndex(a.status) - getStatusIndex(b.status);
   });
 
+  const handleBadgeType = (status?: ClassEnrollmentStatus) => {
+    switch (status) {
+      case ClassEnrollmentStatus.ENROLLED:
+        return "secondary";
+      case ClassEnrollmentStatus.CANCELED:
+        return "destructive";
+      default:
+        return "default";
+    }
+  };
+
   return (
-    <ScrollArea className="mt-2 rounded-md max-h-60">
-      <div className="grid grid-cols-1 gap-2 px-4">
+    <Tabs
+      value={activeTab}
+      onValueChange={(value) =>
+        setActiveTab(value as ClassEnrollmentStatus | "ALL")
+      }
+      className="w-full h-full overflow-hidden"
+    >
+      {/* Tabs for filtering */}
+      <TabsList className="mb-4">
+        <TabsTrigger value="ALL">ALL</TabsTrigger>
+        <TabsTrigger value={ClassEnrollmentStatus.ENROLLED}>
+          {ClassEnrollmentStatus.ENROLLED}
+        </TabsTrigger>
+        <TabsTrigger value={ClassEnrollmentStatus.WAITLISTED}>
+          {ClassEnrollmentStatus.WAITLISTED}
+        </TabsTrigger>
+        <TabsTrigger value={ClassEnrollmentStatus.CANCELED}>
+          {ClassEnrollmentStatus.CANCELED}
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value={activeTab} className="h-full">
         {sortedEnrollments.length === 0 ? (
-          <Label>No enrollments for this class</Label>
+          <p className="text-center text-gray-500">No enrollments found.</p>
         ) : (
-          sortedEnrollments.map((enrollment) => {
-            const isLoggedUser = user?.athlete?.id === enrollment.athleteId;
+          <ScrollArea className="h-fit ">
+            <div className="w-full overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Athlete</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedEnrollments.map((enrollment) => {
+                    const isLoggedUser =
+                      user?.athlete?.id === enrollment.athleteId;
 
-            // Check-in/Check-out Logic
-            const canCheckIn =
-              !enrollment.isCheckedIn &&
-              enrollment.status === ClassEnrollmentStatus.ENROLLED &&
-              (isLoggedUser || isAdmin);
+                    const canCheckIn =
+                      !enrollment.isCheckedIn &&
+                      enrollment.status === ClassEnrollmentStatus.ENROLLED &&
+                      (isLoggedUser || isAdmin);
 
-            const canCheckOut =
-              enrollment.isCheckedIn && (isLoggedUser || isAdmin);
+                    const canCheckOut =
+                      enrollment.isCheckedIn && (isLoggedUser || isAdmin);
 
-            // Cancel Enrollment Logic
-            const canCancel =
-              isAdmin ||
-              (isLoggedUser &&
-                enrollment.status === ClassEnrollmentStatus.ENROLLED);
+                    const canCancel =
+                      isAdmin ||
+                      (isLoggedUser &&
+                        enrollment.status === ClassEnrollmentStatus.ENROLLED);
 
-            return (
-              <div
-                key={enrollment.id}
-                className="grid grid-cols-5 p-0 mt-0 border-b"
-              >
-                {/* Athlete Details */}
-                <div className="flex items-center justify-start col-span-2 text-sm gap-x-2">
-                  <Avatar>
-                    <AvatarImage src="" alt={enrollment.athlete.firstName} />
-                    <AvatarFallback className="flex items-center justify-center w-10 rounded-full bg-slate-100">
-                      {getInitials(
-                        enrollment.athlete.firstName,
-                        enrollment.athlete.lastName
-                      )}
-                    </AvatarFallback>
-                  </Avatar>
-                  <p className="text-sm font-semibold">
-                    {`${enrollment.athlete.firstName} ${enrollment.athlete.lastName}`}
-                  </p>
-                </div>
+                    return (
+                      <TableRow key={enrollment.id}>
+                        {/* Athlete Info */}
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="hidden p-1 rounded-full xl:block">
+                              <AvatarImage
+                                className="rounded-full h-7 w-7"
+                                src={enrollment.athlete.profileImageUrl}
+                                alt={enrollment.athlete.firstName}
+                              />
+                            </Avatar>
+                            <span className="truncate max-w-24">{`${enrollment.athlete.firstName}`}</span>
+                          </div>
+                        </TableCell>
 
-                {/* Enrollment Status */}
-                <div className="text-sm">
-                  <Badge
-                    variant={
-                      enrollment.status === "WAITLISTED"
-                        ? "default"
-                        : "secondary"
-                    }
-                  >
-                    {enrollment.status}
-                  </Badge>
-                </div>
+                        {/* Status */}
+                        <TableCell>
+                          <Badge variant={handleBadgeType(enrollment.status)}>
+                            {enrollment.status}
+                          </Badge>
+                        </TableCell>
 
-                {/* Check-In/Check-Out */}
-                <div className="text-sm">
-                  {canCheckIn && (
-                    <Button
-                      size="xs"
-                      onClick={() => checkInMutation(enrollment.id)}
-                      disabled={isCheckInLoading}
-                    >
-                      Check-in
-                    </Button>
-                  )}
-                  {canCheckOut && (
-                    <Button
-                      size="xs"
-                      variant="outline"
-                      onClick={() => cancelCheckIn(enrollment.id)}
-                      disabled={cancelCheckInLoading}
-                    >
-                      Check-out
-                    </Button>
-                  )}
-                  {!canCheckIn && !canCheckOut && (
-                    <div className="flex justify-center max-w-20">--</div>
-                  )}
-                </div>
-
-                {/* Cancel Enrollment */}
-                <div>
-                  {canCancel ? (
-                    <Button
-                      size="xs"
-                      variant="destructive"
-                      onClick={() => cancelEnrollment(enrollment.id)}
-                    >
-                      {isAdmin ? "Admin Cancel" : "Cancel Enrollment"}
-                    </Button>
-                  ) : (
-                    <div className="flex justify-center max-w-20">--</div>
-                  )}
-                </div>
-              </div>
-            );
-          })
+                        {/* Actions */}
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {canCheckIn && (
+                              <Button
+                                size="xs"
+                                onClick={() => checkInMutation(enrollment.id)}
+                                disabled={isCheckInLoading}
+                              >
+                                Check-in
+                              </Button>
+                            )}
+                            {canCheckOut && (
+                              <TooltipProvider>
+                                <Tooltip delayDuration={0}>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      size="xs"
+                                      variant="outline"
+                                      onClick={() =>
+                                        cancelCheckIn(enrollment.id)
+                                      }
+                                      disabled={cancelCheckInLoading}
+                                    >
+                                      <XIcon className="w-3.5" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Check-out</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                            {canCancel && (
+                              <TooltipProvider>
+                                <Tooltip delayDuration={0}>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      size="xs"
+                                      variant="destructive"
+                                      onClick={() =>
+                                        cancelEnrollment(enrollment.id)
+                                      }
+                                    >
+                                      {isAdmin ? "Admin Cancel" : "Cancel"}
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Cancel enrollment</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </ScrollArea>
         )}
-      </div>
-    </ScrollArea>
+      </TabsContent>
+    </Tabs>
   );
 };
 
