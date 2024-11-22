@@ -45,10 +45,10 @@ const ClassDetail = () => {
   return (
     <>
       <ClassDetailLayout>
-        <div className="w-full border-l lg:w-1/4">
+        <div className="border-l lg:col-span-3 ">
           <ClassDetailCoach coachId={classDetail.data.coachId} />
         </div>
-        <div className="flex flex-col flex-1 border-l border-r">
+        <div className="flex flex-col border-l border-r md:col-span-2 lg:col-span-6">
           <ClassInfo
             id={classDetail.data.id}
             className={classDetail.data.name}
@@ -56,9 +56,8 @@ const ClassDetail = () => {
             date={classDetail.data.date}
             time={classDetail.data.time}
             duration={classDetail.data.duration}
-            coachId={classDetail.data.coachId}
           />
-          <div className="flex-1 w-full bg-white border-y">
+          <div className="bg-white border-y">
             <Card className="border-none rounded-none">
               <CardHeader>
                 <CardTitle>Workout</CardTitle>
@@ -67,7 +66,7 @@ const ClassDetail = () => {
             </Card>
           </div>
         </div>
-        <div className="w-full border-r lg:w-1/4">
+        <div className="overflow-hidden border-r md:col-span-2 lg:col-span-3">
           <ClassEnrollments
             classId={classDetail.data.id}
             capacity={
@@ -84,8 +83,8 @@ export default ClassDetail;
 
 const ClassDetailLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex flex-row flex-wrap w-full h-full">{children}</div>
+    <div className="grid col-span-1 md:grid-cols-2 lg:grid-cols-12">
+      {children}
+    </div>
   );
 };
-
-
