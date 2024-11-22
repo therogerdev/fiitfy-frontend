@@ -1,7 +1,7 @@
-import * as React from "react"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -31,7 +31,8 @@ const toastVariants = cva(
         info: "border bg-foreground/50 text-background",
         destructive:
           "destructive group border-destructive bg-destructive text-destructive-foreground",
-      },
+        success: "border bg-white text-foreground"
+        },
     },
     defaultVariants: {
       variant: "default",
@@ -116,13 +117,6 @@ type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>
 type ToastActionElement = React.ReactElement<typeof ToastAction>
 
 export {
-  type ToastProps,
-  type ToastActionElement,
-  ToastProvider,
-  ToastViewport,
-  Toast,
-  ToastTitle,
-  ToastDescription,
-  ToastClose,
-  ToastAction,
+  Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, type ToastActionElement, type ToastProps
 }
+

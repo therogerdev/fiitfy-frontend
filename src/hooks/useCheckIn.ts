@@ -21,11 +21,10 @@ export const useCheckIn = () => {
       return response.data;
     },
     onSuccess: () => {
-     
       toast({
         title: "Check-In Successful",
-        description: `Check-in successful!`,
-        variant: "default",
+        description: `You are in! Have fun and sweat!`,
+        variant: "success",
       });
       queryClient.invalidateQueries({
         queryKey: ["enrollment"],

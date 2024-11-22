@@ -22,7 +22,7 @@ export const ClassInfo = ({
   const { copyToClipboard } = useCopyToClipboard();
 
   return (
-    <Card className="border-none rounded-none">
+    <Card className="border-b border-l-0 border-r-0 rounded-none">
       <CardHeader>
         <CardTitle>Class Information</CardTitle>
       </CardHeader>

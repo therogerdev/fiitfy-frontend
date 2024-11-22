@@ -27,7 +27,7 @@ export const ClassDetailCoach = ({ coachId }: { coachId: string }) => {
   }
 
   return (
-    <Card className="border-none rounded-none">
+    <Card className="border rounded-none">
       <CardContent className="flex py-4 gap-x-2">
         <Avatar className="w-12 h-12">
           <AvatarImage

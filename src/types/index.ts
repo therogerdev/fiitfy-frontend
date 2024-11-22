@@ -15,6 +15,7 @@ export enum ClassType {
 export enum AttendanceStatus {
   ATTENDED = "ATTENDED",
   MISSED = "MISSED",
+  BOOKED = "BOOKED",
 }
 
 export enum ClassEnrollmentStatus {
@@ -250,9 +251,18 @@ export interface ClassResponse {
 
 export interface ClassEnrollmentResponse {
   success: boolean;
-  type: "classEnrollment";
+  type: "ClassEnrollment";
   total: number;
-  data: ClassEnrollment[];
+  data: ClassEnrollment[] ;
+  meta: {
+    timestamp: string;
+  };
+}
+export interface ClassEnrollmentAttendanceResponse {
+  success: boolean;
+  type: "ClassEnrollment";
+  total: number;
+  data: ClassEnrollment 
   meta: {
     timestamp: string;
   };

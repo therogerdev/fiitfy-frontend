@@ -1,6 +1,13 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import {
   Table,
   TableBody,
@@ -14,8 +21,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCancelCheckIn } from "@/hooks/useCancelCheckIn";
 import { useCancelEnrollment } from "@/hooks/useCancelEnrollment";
 import { useCheckIn } from "@/hooks/useCheckIn";
-import { ClassEnrollment, ClassEnrollmentStatus, Role } from "@/types";
-import { XIcon } from "lucide-react";
+import { useEnrollmentStatus } from "@/hooks/useEnrollmentStatus";
+import {
+  AttendanceStatus,
+  ClassEnrollment,
+  ClassEnrollmentStatus,
+  Role,
+} from "@/types";
+import { MapPin, XIcon } from "lucide-react";
 import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import {
@@ -38,6 +51,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
   const { cancelCheckIn, cancelCheckInLoading } = useCancelCheckIn();
   const { mutate: checkInMutation, isPending: isCheckInLoading } = useCheckIn();
   const { mutate: cancelEnrollment } = useCancelEnrollment(classId);
+  const { mutate: updateStatus } = useEnrollmentStatus();
 
   const isAdmin = user?.role === Role.ADMIN;
 
@@ -68,15 +82,8 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
     return getStatusIndex(a.status) - getStatusIndex(b.status);
   });
 
-  const handleBadgeType = (status?: ClassEnrollmentStatus) => {
-    switch (status) {
-      case ClassEnrollmentStatus.ENROLLED:
-        return "secondary";
-      case ClassEnrollmentStatus.CANCELED:
-        return "destructive";
-      default:
-        return "default";
-    }
+  const handleStatusChange = (id: string, status: AttendanceStatus) => {
+    updateStatus({ enrollmentId: id, status: status });
   };
 
   return (
@@ -151,9 +158,22 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
 
                         {/* Status */}
                         <TableCell>
-                          <Badge variant={handleBadgeType(enrollment.status)}>
-                            {enrollment.status}
-                          </Badge>
+                          <Select
+                          
+                            defaultValue={AttendanceStatus.BOOKED}
+                            onValueChange={(value: AttendanceStatus) =>
+                              handleStatusChange(enrollment.id, value)
+                            }
+                          >
+                            <SelectTrigger className="w-[100px]">
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="BOOKED">Booked</SelectItem>
+                              <SelectItem value="ATTENDED">Attended</SelectItem>
+                              <SelectItem value="MISSED">Missed</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </TableCell>
 
                         {/* Actions */}
@@ -165,7 +185,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                                 onClick={() => checkInMutation(enrollment.id)}
                                 disabled={isCheckInLoading}
                               >
-                                Check-in
+                                <MapPin className="w-3.5" />
                               </Button>
                             )}
                             {canCheckOut && (
@@ -200,7 +220,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                                         cancelEnrollment(enrollment.id)
                                       }
                                     >
-                                      {isAdmin ? "Admin Cancel" : "Cancel"}
+                                      <XIcon className="w-3.5" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
