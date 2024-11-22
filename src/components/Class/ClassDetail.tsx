@@ -83,7 +83,7 @@ export default ClassDetail;
 
 const ClassDetailLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="grid col-span-1 md:grid-cols-2 lg:grid-cols-12">
+    <div className="grid h-full col-span-1 overflow-hidden md:grid-cols-2 lg:grid-cols-12">
       {children}
     </div>
   );
