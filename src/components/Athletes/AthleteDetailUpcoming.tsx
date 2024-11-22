@@ -51,7 +51,9 @@ const AthleteDetailUpcoming = ({ athleteId }: { athleteId: string }) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-        <CardTitle className="text-sm font-medium">Upcoming Classes</CardTitle>
+        <CardTitle className="font-semibold text-md text-primary">
+          Upcoming Classes
+        </CardTitle>
         <Timer className="w-4 h-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
@@ -93,7 +95,7 @@ const AthleteDetailUpcoming = ({ athleteId }: { athleteId: string }) => {
                       ? "Today"
                       : isTomorrow(new Date(classItem.date))
                       ? "Tomorrow"
-                      : format(new Date(classItem.date), "PP")}
+                      : format(new Date(classItem.date), "dd/MM")}
                   </dd>
                   <dt className="col-span-2 truncate text-primary text-sm/6">
                     {classItem.name}
