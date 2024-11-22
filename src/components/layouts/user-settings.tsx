@@ -51,7 +51,10 @@ function UserSettings() {
               alt={user.username}
             />
             <AvatarFallback>
-              {getInitials(user?.athlete?.firstName, user?.athlete?.lastName)}
+              {getInitials(
+                user?.athlete?.firstName as string,
+                user?.athlete?.lastName as string
+              )}
             </AvatarFallback>
           </Avatar>
         </Button>
