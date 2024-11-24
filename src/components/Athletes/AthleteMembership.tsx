@@ -53,7 +53,7 @@ const AthleteMembership: React.FC<AthleteMembershipProps> = ({
           </p>
           <Button
             onClick={() =>
-              navigate(`/athlete/${athlete?.id}/programs`, {
+              navigate(`/memberships-plan`, {
                 state: {
                   customerEmail: athlete?.email,
                 },

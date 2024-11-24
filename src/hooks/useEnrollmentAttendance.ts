@@ -10,7 +10,7 @@ import { EndpointType } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export const useEnrollmentStatus = () => {
+export const useEnrollmentAttendance = () => {
   const { toast } = useToast();
 
   const mutation = useMutation<
@@ -21,14 +21,12 @@ export const useEnrollmentStatus = () => {
     mutationFn: async ({ enrollmentId, status }) => {
       const response = await apiClient.post<ClassEnrollmentAttendanceResponse>(
         `${EndpointType.Attendance}/${enrollmentId}/status`,
-        { status } // Send the status in the request body
+        { status }
       );
-      console.log(status);
 
       return response.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       // Invalidate relevant queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: ["enrollment"] });
       toast({

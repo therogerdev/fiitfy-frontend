@@ -44,7 +44,7 @@ const AthleteDetailPage = () => {
   }
 
   return (
-    <ContentLayout className="">
+    <ContentLayout>
       <BreadcrumbComponent
         links={[
           appLink.athletes("All Athletes"),
@@ -52,7 +52,7 @@ const AthleteDetailPage = () => {
         ]}
       />
 
-      <main className="flex flex-col flex-1 gap-4 p-4 overflow-hidden md:gap-8">
+      <main className="flex flex-col flex-1 gap-4 overflow-hidden md:gap-8">
         {/* Top Section */}
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 xl:grid-cols-3">
           <AthleteDetailInformation athlete={athlete} />
