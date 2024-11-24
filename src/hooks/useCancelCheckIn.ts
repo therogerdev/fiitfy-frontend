@@ -36,7 +36,7 @@ export const useCancelCheckIn = () => {
       toast({
         title: "Check-In Cancelled",
         description: data.message,
-        variant: "default",
+        variant: "destructive",
       });
       queryClient.invalidateQueries({
         queryKey: ["enrollment"],

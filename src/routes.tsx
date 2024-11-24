@@ -97,9 +97,8 @@ const AppRoutes = () => {
         <Route
           path={appLink.athleteDetail(":id").href}
           element={<AthleteDetailPage />}
-        >
-          <Route path="programs" element={<AthletePlans />} />
-        </Route>
+        ></Route>
+        <Route path="/memberships-plan" element={<AthletePlans />} />
       </Routes>
     </Suspense>
   );

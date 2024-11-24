@@ -5,11 +5,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { useEffect } from "react";
 import { useParams } from "react-router";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Modal from "../ui/modal";
+import { ClassDetailCoach } from "./ClassDetailCoach";
 import { ClassEnrollments } from "./ClassEnrollments";
 import { ClassInfo } from "./ClassInfo";
-import { ClassDetailCoach } from "./ClassDetailCoach";
+import ClassDetailWod from "./ClassDetailWod";
+import { ScrollArea } from "../ui/scroll-area";
 
 const fetchClassDetail = async (id: string) => {
   const response = await apiClient.get(`${EndpointType.Class}/${id}`);
@@ -43,12 +44,19 @@ const ClassDetail = () => {
   }
 
   return (
-    <>
-      <ClassDetailLayout>
-        <div className="border-l lg:col-span-3 ">
-          <ClassDetailCoach coachId={classDetail.data.coachId} />
+    <ClassDetailLayout>
+      <div className="h-full border-l lg:col-span-3">
+        <div className="h-full bg-white border">
+          <ScrollArea className="">
+            <ClassDetailCoach coachId={classDetail.data.coachId} />
+            <div className="p-2">
+              Top Performance! 
+            </div>
+          </ScrollArea>
         </div>
-        <div className="flex flex-col border-l border-r md:col-span-2 lg:col-span-6">
+      </div>
+      <div className="border-r lg:col-span-6">
+        <div className="flex flex-col h-full">
           <ClassInfo
             id={classDetail.data.id}
             className={classDetail.data.name}
@@ -57,25 +65,18 @@ const ClassDetail = () => {
             time={classDetail.data.time}
             duration={classDetail.data.duration}
           />
-          <div className="bg-white border-y">
-            <Card className="border-none rounded-none">
-              <CardHeader>
-                <CardTitle>Workout</CardTitle>
-              </CardHeader>
-              <CardContent></CardContent>
-            </Card>
-          </div>
+          <ClassDetailWod />
         </div>
-        <div className="overflow-hidden border-r md:col-span-2 lg:col-span-3">
-          <ClassEnrollments
-            classId={classDetail.data.id}
-            capacity={
-              classDetail.data.capacity - classDetail.data.activeEnrollments
-            }
-          />
-        </div>
-      </ClassDetailLayout>
-    </>
+      </div>
+      <div className="overflow-hidden border-r md:col-span-2 lg:col-span-3">
+        <ClassEnrollments
+          classId={classDetail.data.id}
+          capacity={
+            classDetail.data.capacity - classDetail.data.activeEnrollments
+          }
+        />
+      </div>
+    </ClassDetailLayout>
   );
 };
 

@@ -61,7 +61,6 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: Something went wrong!</div>;
 
-  console.log(enrollment?.data)
 
   return (
     <Card className="h-full border-none rounded-none">

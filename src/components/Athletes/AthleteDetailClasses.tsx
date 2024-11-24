@@ -5,17 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/config/axios.config";
 import { appLink } from "@/config/links";
-import {
-  Class,
-  ClassEnrollmentStatus,
-  ClassResponse,
-  ClientError,
-} from "@/types";
+import { ClassEnrollmentStatus, ClientError } from "@/types";
 import { EndpointType } from "@/types/api";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { format } from "date-fns";
@@ -23,12 +18,25 @@ import { EyeIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-
-import { Table } from "../ui/table";
 import { AthleteDetailCardLoading } from "./AthleteDetailCardLoading";
 
+export interface EnrollmentClasses {
+  success: boolean;
+  type: "class";
+  total: number;
+  data: {
+    id: string;
+    name: string;
+    date: string;
+    status: ClassEnrollmentStatus;
+  }[];
+  meta: {
+    timestamp: string;
+  };
+}
+
 const fetchAthleteClasses = async (athleteId: string) => {
-  const response = await apiClient.get<ClassResponse>(
+  const response = await apiClient.get<EnrollmentClasses>(
     `${EndpointType.Enroll}/${athleteId}/classes`,
     {
       params: {
@@ -44,7 +52,7 @@ const AthleteDetailClasses = ({ athleteId }: { athleteId?: string }) => {
     data: classes,
     error,
     isLoading,
-  } = useQuery<ClassResponse, AxiosError<ClientError>>({
+  } = useQuery<EnrollmentClasses, AxiosError<ClientError>>({
     queryKey: ["classes", athleteId],
     queryFn: () => fetchAthleteClasses(athleteId || ""),
     enabled: !!athleteId,
@@ -64,45 +72,39 @@ const AthleteDetailClasses = ({ athleteId }: { athleteId?: string }) => {
   }
 
   // Filter classes by status
-  const bookedClasses = classes?.data.filter(
-    (classInfo) => classInfo.status === "ENROLLED"
-  );
+  const bookedClasses = classes?.data.filter((classInfo) => {
+    return classInfo.status === ClassEnrollmentStatus.ENROLLED;
+  });
   const attendedClasses = classes?.data.filter(
-    (classInfo) => classInfo.status === "WAITLISTED"
+    (classInfo) => classInfo.status === ClassEnrollmentStatus.WAITLISTED
   );
   const canceledClasses = classes?.data.filter(
-    (classInfo) => classInfo.status === "CANCELED"
+    (classInfo) => classInfo.status === ClassEnrollmentStatus.CANCELED
   );
 
   return (
-    <Card className="xl:col-span-2">
-      <Tabs defaultValue="booked">
+    <Card className="h-full col-span-2">
+      <Tabs defaultValue="enrolled" className="h-full">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="grid gap-2">
             <CardTitle>Classes</CardTitle>
             <CardDescription>Recent classes member attended.</CardDescription>
           </div>
           <TabsList className="grid w-[300px] grid-cols-3">
-            <TabsTrigger value="booked">Booked</TabsTrigger>
+            <TabsTrigger value="enrolled">Enrolled</TabsTrigger>
             <TabsTrigger value="attended">Attended</TabsTrigger>
             <TabsTrigger value="canceled">Canceled</TabsTrigger>
           </TabsList>
         </CardHeader>
-        <CardContent>
-          <TabsContent value="booked">
-            <ScrollArea className="max-h-64">
-              <AthleteClassesTable classes={bookedClasses} />
-            </ScrollArea>
+        <CardContent className="h-full overflow-hidden">
+          <TabsContent value="enrolled" className="h-full">
+            <AthleteClassesTable classes={bookedClasses || []} />
           </TabsContent>
-          <TabsContent value="attended">
-            <ScrollArea className="max-h-64">
-              <AthleteClassesTable classes={attendedClasses || []} />
-            </ScrollArea>
+          <TabsContent value="attended" className="h-full">
+            <AthleteClassesTable classes={attendedClasses || []} />
           </TabsContent>
-          <TabsContent value="canceled">
-            <ScrollArea className="max-h-64">
-              <AthleteClassesTable classes={canceledClasses || []} />
-            </ScrollArea>
+          <TabsContent value="canceled" className="h-full">
+            <AthleteClassesTable classes={canceledClasses || []} />
           </TabsContent>
         </CardContent>
       </Tabs>
@@ -113,76 +115,62 @@ const AthleteDetailClasses = ({ athleteId }: { athleteId?: string }) => {
 export default AthleteDetailClasses;
 
 interface AthleteClassesTableProps {
-  athleteId: string;
+  classes: EnrollmentClasses["data"];
 }
 
-interface AthleteClassesTableProps {
-  classes: Class[];
-}
-
-
-
-type ClassWithStatus = Class & {
-  status: ClassEnrollmentStatus;
-};
-
-
-const AthleteClassesTable: React.FC = ({
+const AthleteClassesTable: React.FC<AthleteClassesTableProps> = ({
   classes,
 }) => {
   const navigate = useNavigate();
+
   return (
-    <Table>
-      <AthleteClassesTableHeader />
-
-      <tbody className="bg-white">
-        {classes?.map((classInfo: ClassWithStatus) => (
-          <tr key={classInfo.id} className="border-t">
-            <td className="px-4 py-2">
-              <div className="flex items-center">
-                <div>
-                  <div className="font-medium">{`${classInfo.name}`}</div>
+    <ScrollArea className="h-[300px]">
+      <table className="w-full">
+        <AthleteClassesTableHeader />
+        <tbody>
+          {classes?.map((classInfo) => (
+            <tr key={classInfo.id} className="border-t">
+              <td className="px-4 py-2">
+                <div className="flex items-center">
+                  <div>
+                    <div className="font-medium">{`${classInfo.name}`}</div>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td className="px-4 py-2">
-              {format(new Date(new Date(classInfo.date)), "PP")}
-            </td>
-            <td className="px-4 py-2">
-              {format(new Date(new Date(classInfo.date)), "p")}
-            </td>
-            <td className="px-4 py-2">
-              {/* <Badge
-                variant={`${
-                  classInfo.status === ClassEnrollmentStatus.CANCELED
-                    ? "destructive"
-                    : ""
-                }`}
-              >
-                {classInfo.status}
-              </Badge>{" "} */}
-
-                <Badge variant={classInfo.status === ClassEnrollmentStatus.CANCELED ? "destructive" : "default"}>
+              </td>
+              <td className="px-4 py-2">
+                {format(new Date(classInfo.date), "PP")}
+              </td>
+              <td className="px-4 py-2">
+                {format(new Date(classInfo.date), "p")}
+              </td>
+              <td className="px-4 py-2">
+                <Badge
+                  variant={
+                    classInfo.status === ClassEnrollmentStatus.CANCELED
+                      ? "destructive"
+                      : "default"
+                  }
+                >
                   {classInfo.status}
                 </Badge>
-
-            </td>
-            <td className="px-4 py-2">
-              <div className="flex space-x-2">
-                <Button
-                  onClick={() =>
-                    navigate(`${appLink.classDetail(classInfo.id, "").href}`)
-                  }
-                  size={"sm"}
-                >
-                  <EyeIcon className="w-3.5" />
-                </Button>
-              </div>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+              </td>
+              <td className="px-4 py-2">
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={() =>
+                      navigate(`${appLink.classDetail(classInfo.id, "").href}`)
+                    }
+                    size={"sm"}
+                  >
+                    <EyeIcon className="w-3.5" />
+                  </Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </ScrollArea>
   );
 };
 

@@ -20,7 +20,7 @@ interface BreadcrumbComponentProps {
 }
 
 const BreadcrumbComponent = ({ links }: BreadcrumbComponentProps) => (
-  <Breadcrumb className='hidden md:flex'>
+  <Breadcrumb className='hidden my-2 md:flex'>
     <BreadcrumbList>
       <BreadcrumbLink asChild>
         <Link to={'/'}>

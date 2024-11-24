@@ -6,7 +6,7 @@ import { EndpointType } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export const useCheckIn = () => {
+export const useCheckIn = (classId: string) => {
   const { toast } = useToast();
 
   const mutation = useMutation<
@@ -21,14 +21,14 @@ export const useCheckIn = () => {
       return response.data;
     },
     onSuccess: () => {
-     
       toast({
         title: "Check-In Successful",
-        description: `Check-in successful!`,
-        variant: "default",
+        description: `You are in! Have fun and sweat!`,
+        variant: "success",
       });
       queryClient.invalidateQueries({
-        queryKey: ["enrollment"],
+        queryKey: ["enrollment", classId],
+        // queryKey: ["enrollment"],
       });
     },
     onError: (error) => {
