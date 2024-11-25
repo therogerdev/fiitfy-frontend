@@ -65,7 +65,7 @@ const ClassDetail = () => {
             time={classDetail.data.time}
             duration={classDetail.data.duration}
           />
-          <ClassDetailWod />
+          <ClassDetailWod workout={classDetail?.data?.workout} />
         </div>
       </div>
       <div className="overflow-hidden border-r md:col-span-2 lg:col-span-3">

@@ -127,7 +127,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
         )}
 
         {sortedEnrollments.length > 0 && (
-          <ScrollArea className="h-fit ">
+          <ScrollArea className="h-96">
             <div className="w-full overflow-auto">
               <Table>
                 <TableHeader>
@@ -158,7 +158,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                       <TableRow key={enrollment.id}>
                         {/* Athlete Info */}
                         <TableCell>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-0">
                             <Avatar className="hidden p-1 rounded-full xl:block">
                               <AvatarImage
                                 className="rounded-full h-7 w-7"
@@ -289,6 +289,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
             <div className="w-full overflow-auto">
               <Table>
                 <TableBody>
+                  <h3 className="mt-6 mb-2 font-semibold">Waitlist</h3>
                   {enrollments
                     .filter(
                       (enrollment) =>
@@ -306,7 +307,6 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
 
                       return (
                         <>
-                          <h3 className="mt-6 mb-2 font-semibold">Waitlist</h3>
                           <TableRow key={enrollment.id}>
                             {/* Athlete Info */}
                             <TableCell>

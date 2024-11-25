@@ -32,28 +32,18 @@ export enum RecurrenceType {
   CUSTOM = "CUSTOM",
 }
 
-export enum WorkoutType {
-  ForTime = "ForTime",
-  AMRAP = "AMRAP",
-  EMOM = "EMOM",
-  RFT = "RFT",
-  Tabata = "Tabata",
-  Chipper = "Chipper",
-  Ladder = "Ladder",
-  Strength = "Strength",
-  Skill = "Skill",
-}
+
 
 export type Box = {
   id: string;
   name: string;
   location: string;
-  createdAt: string; 
-  updatedAt: string; 
+  createdAt: string;
+  updatedAt: string;
   isHeadquarter: boolean;
   headquarterBoxId?: string | null;
-  users: User[]; 
-  classes: Class[]; 
+  users: User[];
+  classes: Class[];
 };
 
 export interface User {
@@ -201,26 +191,57 @@ export interface Programs {
   createdAt: Date;
 }
 
-export interface Workout {
+export type Workout = {
   id: string;
-  type?: WorkoutType;
+  type: WorkoutType;
   title: string;
+  version: number;
+  originalWorkoutId?: string;
   description?: string;
-  createdAt: Date;
   duration: number;
-  intensity?: string;
+  intensity?: WorkoutIntensity;
+  createdAt: string;
+  updatedAt: string;
   movements: Movement[];
+};
+
+export enum WorkoutType {
+  AMRAP = 'AMRAP',
+  EMOM = 'EMOM',
+  FOR_TIME = 'FOR_TIME',
+  STRENGTH = 'STRENGTH',
+  STRETCHING = 'STRETCHING',
+  CARDIO = 'CARDIO',
 }
 
-export interface Movement {
+export enum WorkoutIntensity {
+  LOW = 'LOW',
+  MODERATE = 'MODERATE',
+  HIGH = 'HIGH',
+}
+export type Movement = {
   id: string;
-  createdAt: Date;
   name: string;
-  weight?: string;
-  reps: string[];
-  category: string;
-  workoutId?: string;
-  Workout?: Workout;
+  type: MovementType;
+  description?: string;
+  duration?: string;
+  instructions?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export enum MovementType {
+  CARDIO = "CARDIO",
+  STRENGTH = "STRENGTH",
+  FLEXIBILITY = "FLEXIBILITY",
+  GYMNASTICS = "GYMNASTICS",
+  OLYMPIC_LIFTING = "OLYMPIC_LIFTING",
+  ACCESSORY = "ACCESSORY",
+  CORE = "CORE",
+  BALANCE = "BALANCE",
+  ENDURANCE = "ENDURANCE",
+  POWER = "POWER",
+  BODYWEIGHT = "BODYWEIGHT",
 }
 
 export interface AthleteResponse {
@@ -253,7 +274,7 @@ export interface ClassEnrollmentResponse {
   success: boolean;
   type: "ClassEnrollment";
   total: number;
-  data: ClassEnrollment[] ;
+  data: ClassEnrollment[];
   meta: {
     timestamp: string;
   };
@@ -262,7 +283,7 @@ export interface ClassEnrollmentAttendanceResponse {
   success: boolean;
   type: "ClassEnrollment";
   total: number;
-  data: ClassEnrollment 
+  data: ClassEnrollment;
   meta: {
     timestamp: string;
   };
