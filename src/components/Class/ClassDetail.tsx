@@ -42,7 +42,7 @@ const ClassDetail = () => {
   if (error) {
     return <Modal size="lg">Error: {error.message}</Modal>;
   }
-
+console.log(classDetail.data)
   return (
     <ClassDetailLayout>
       <div className="h-full border-l lg:col-span-3">
@@ -65,7 +65,7 @@ const ClassDetail = () => {
             time={classDetail.data.time}
             duration={classDetail.data.duration}
           />
-          <ClassDetailWod workout={classDetail?.data?.workout} />
+          <ClassDetailWod workouts={classDetail?.data?.workouts} />
         </div>
       </div>
       <div className="overflow-hidden border-r md:col-span-2 lg:col-span-3">

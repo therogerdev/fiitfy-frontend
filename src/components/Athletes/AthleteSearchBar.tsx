@@ -1,4 +1,4 @@
-import { Input } from '../ui/input';
+import { Input } from "../ui/input";
 
 interface AthleteSearchBarProps {
   searchQuery: string;
@@ -14,13 +14,13 @@ const AthleteSearchBar: React.FC<AthleteSearchBarProps> = ({
   };
 
   return (
-    <div className='mt-0'>
+    <div className="mt-0">
       <Input
-        type='search'
-        placeholder='Search by name, phone or email'
+        type="search"
+        placeholder="Search by name, phone or email"
         value={searchQuery}
         onChange={handleSearchChange}
-        className='flex-grow h-12 bg-white border-t rounded-none'
+        className="flex-grow h-12 bg-white border-t rounded-none"
       />
     </div>
   );
