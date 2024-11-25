@@ -165,10 +165,18 @@ export interface ClassEnrollment {
 export interface Performance {
   id: string;
   athleteId: string;
-  workout: string;
-  result: string;
-  date: Date;
-  athlete: Athlete;
+  movementId: string;
+  workoutId?: string;
+  date: string;
+  sets?: number;
+  reps?: number;
+  weight?: number;
+  weightUnit?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+  movement: Movement; // Reference to Movement
+  workout?: Workout; // Reference to Workout (optional)
 }
 
 export interface Programs {
@@ -191,9 +199,9 @@ export interface Programs {
   createdAt: Date;
 }
 
-export type Workout = {
+export interface Workout {
   id: string;
-  type: WorkoutType;
+  type?: WorkoutType;
   title: string;
   version: number;
   originalWorkoutId?: string;
@@ -202,8 +210,8 @@ export type Workout = {
   intensity?: WorkoutIntensity;
   createdAt: string;
   updatedAt: string;
-  movements: Movement[];
-};
+  movements: WorkoutMovement[]; // Related movements
+}
 
 export enum WorkoutType {
   AMRAP = 'AMRAP',
@@ -219,16 +227,26 @@ export enum WorkoutIntensity {
   MODERATE = 'MODERATE',
   HIGH = 'HIGH',
 }
-export type Movement = {
+export interface Movement {
   id: string;
   name: string;
-  type: MovementType;
-  description?: string;
-  duration?: string;
-  instructions?: string;
+  category: MovementType;
   createdAt: string;
   updatedAt: string;
-};
+}
+export interface WorkoutMovement {
+  id: string;
+  workoutId: string;
+  movementId: string;
+  reps?: number;
+  sets?: number;
+  weight?: number;
+  weightUnit?: string;
+  createdAt: string;
+  updatedAt: string;
+  movement: Movement; // Reference to Movement
+}
+
 
 export enum MovementType {
   CARDIO = "CARDIO",
