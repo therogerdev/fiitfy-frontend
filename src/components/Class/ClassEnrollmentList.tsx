@@ -22,7 +22,7 @@ import {
   ClassEnrollmentStatus,
   Role,
 } from "@/types";
-import { XIcon } from "lucide-react";
+import { CircleSlash2, MapPinCheckInside, XIcon } from "lucide-react";
 import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import {
@@ -157,7 +157,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                     return (
                       <TableRow key={enrollment.id}>
                         {/* Athlete Info */}
-                        <TableCell>
+                        <TableCell className="p-0">
                           <div className="flex items-center gap-0">
                             <Avatar className="hidden p-1 rounded-full xl:block">
                               <AvatarImage
@@ -178,7 +178,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                         </TableCell>
 
                         {/* Actions */}
-                        <TableCell>
+                        <TableCell className="p-0">
                           <div className="flex items-center gap-2">
                             {canCheckIn && (
                               <TooltipProvider>
@@ -191,7 +191,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                                       }
                                       disabled={isCheckInLoading}
                                     >
-                                      {/* <MapPin className="w-3.5" /> */}IN
+                                      <MapPinCheckInside className="w-3.5" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
@@ -215,7 +215,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                                       }
                                     >
                                       {/* <MapPinOff className="w-3.5" /> */}
-                                      NO SHOW
+                                      <CircleSlash2 className="w-3.5" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
@@ -309,7 +309,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                         <>
                           <TableRow key={enrollment.id}>
                             {/* Athlete Info */}
-                            <TableCell>
+                             <TableCell className="p-0">
                               <div className="flex items-center gap-2">
                                 <Avatar className="hidden p-1 rounded-full xl:block">
                                   <AvatarImage
@@ -330,7 +330,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                             </TableCell>
 
                             {/* Actions */}
-                            <TableCell>
+                             <TableCell className="p-0">
                               <div className="flex items-center gap-2">
                                 {canCancel && (
                                   <TooltipProvider>

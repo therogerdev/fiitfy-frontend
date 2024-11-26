@@ -78,7 +78,7 @@ const EnrollLoggedUser: React.FC<EnrollLoggedUserProps> = ({ classId }) => {
                 <AlertDialogCancel>Close</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() =>
-                    navigate(`/athlete/${user?.athlete?.id}/programs`, {
+                    navigate(`/memberships-plan`, {
                       state: {
                         customerEmail: user?.athlete?.email,
                       },

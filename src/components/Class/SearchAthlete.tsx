@@ -2,8 +2,9 @@ import { apiClient } from "@/config/axios.config";
 import { queryClient } from "@/config/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useDebounce } from "@/hooks/useDebounce";
+import { fetchAthleteBySearch } from "@/services/athlete";
+import { searchQueryAtom, selectedAthleteIdAtom } from "@/store/class";
 import {
-  Athlete,
   ClassEnrollment,
   ClassEnrollmentResponse,
   ClassEnrollmentStatus,
@@ -13,26 +14,10 @@ import { EndpointType } from "@/types/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useAtom, useSetAtom } from "jotai";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { searchQueryAtom, selectedAthleteIdAtom } from "@/store/class";
-
-const fetchAthleteBySearch = async (
-  searchQuery: string
-): Promise<Athlete[]> => {
-  if (!searchQuery.trim()) {
-    return [];
-  }
-
-  const response = await apiClient.get<{ data: Athlete[] }>(
-    `${EndpointType.Athlete}/search`,
-    {
-      params: { name: searchQuery, phone: searchQuery },
-    }
-  );
-  return response.data.data;
-};
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SearchAthleteProps {
   classId?: string;
@@ -44,10 +29,19 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
   const { toast } = useToast();
   const debouncedSearchQuery = useDebounce(searchQuery);
 
-  const { data: athleteResults, refetch } = useQuery<Athlete[]>({
-    queryKey: ["searchAthlete", debouncedSearchQuery],
-    queryFn: () => fetchAthleteBySearch(debouncedSearchQuery),
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+
+  const {
+    data: athleteResults,
+    refetch,
+    isFetching,
+  } = useQuery({
+    queryKey: ["searchAthlete", debouncedSearchQuery, currentPage],
+    queryFn: () =>
+      fetchAthleteBySearch(debouncedSearchQuery, currentPage, rowsPerPage),
     enabled: false,
+    staleTime: 0, // Ensure fresh data on each search
   });
 
   const enrollMutation = useMutation<
@@ -65,35 +59,34 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
         : [response.data.data];
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["enrollment"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["class-detail", classId],
-      });
+      queryClient.invalidateQueries({ queryKey: ["enrollment"] });
+      queryClient.invalidateQueries({ queryKey: ["class-detail", classId] });
 
       data.forEach((enrollment) => {
-        if (enrollment.status === ClassEnrollmentStatus.WAITLISTED) {
-          toast({
-            title: "WAITLIST!",
-            description: `${enrollment.athlete.firstName} ${enrollment.athlete.lastName} has been added to the waitlist`,
-            variant: "default",
-          });
-        } else {
-          toast({
-            title: "Enrolled!",
-            description: `${enrollment.athlete.firstName} ${enrollment.athlete.lastName} has been enrolled successfully`,
-            variant: "info",
-          });
-        }
+        toast({
+          title:
+            enrollment.status === ClassEnrollmentStatus.WAITLISTED
+              ? "WAITLIST!"
+              : "Enrolled!",
+          description: `${enrollment.athlete.firstName} ${
+            enrollment.athlete.lastName
+          } ${
+            enrollment.status === ClassEnrollmentStatus.WAITLISTED
+              ? "has been added to the waitlist"
+              : "has been enrolled successfully"
+          }`,
+          variant:
+            enrollment.status === ClassEnrollmentStatus.WAITLISTED
+              ? "default"
+              : "info",
+        });
       });
 
-      setSelectedAthleteId(null); // Reset selection after successful enrollment
+      setSelectedAthleteId(null);
     },
     onError: (error) => {
       const errorMessage =
         error?.response?.data?.error || "An unexpected error occurred";
-
       toast({
         title: "Enrollment Error",
         description: errorMessage as string,
@@ -108,16 +101,25 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
         console.error("Error fetching athletes:", error);
       });
     }
-  }, [debouncedSearchQuery, refetch]);
+  }, [debouncedSearchQuery, currentPage, refetch]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
+    setCurrentPage(1);
   };
 
   const handleEnrollClick = (athleteId: string) => {
     setSelectedAthleteId(athleteId);
-    enrollMutation.mutate(athleteId); // Trigger the enroll mutation
+    enrollMutation.mutate(athleteId);
   };
+
+  const pagination = athleteResults?.pagination || {
+    currentPage: 1,
+    totalPages: 1,
+    totalCount: 0,
+  };
+
+  console.log(pagination);
 
   return (
     <div>
@@ -130,16 +132,58 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
       />
       {debouncedSearchQuery && athleteResults && (
         <div className="mt-4">
-          <ul>
-            {athleteResults.slice(0, 10).map((athlete) => (
-              <li key={athlete.id} className="flex justify-between">
-                <span>{`${athlete.firstName} ${athlete.lastName}`}</span>
-                <Button size="sm" onClick={() => handleEnrollClick(athlete.id)}>
-                  Enroll
+          {isFetching && (
+            // skeleton
+            <div className="animate-pulse">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <div key={index} className="flex justify-between mb-2">
+                  <div className="w-full h-4 bg-gray-200 rounded"></div>
+                </div>
+              ))}
+            </div>
+          )}
+          {!isFetching && (
+            <>
+              <ul>
+                {athleteResults.data.map((athlete) => (
+                  <li key={athlete.id} className="flex justify-between">
+                    <span>{`${athlete.firstName} ${athlete.lastName}`}</span>
+                    <Button
+                      size="sm"
+                      onClick={() => handleEnrollClick(athlete.id)}
+                    >
+                      Enroll
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex items-center justify-between mt-4">
+                <Button
+                  size="sm"
+                  disabled={pagination.currentPage === 1}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                >
+                  <ChevronLeft className=" w-3.5" />
                 </Button>
-              </li>
-            ))}
-          </ul>
+                <span>
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <Button
+                  size="sm"
+                  disabled={pagination.currentPage === pagination.totalPages || isFetching}
+                  onClick={() =>
+                    setCurrentPage((prev) =>
+                      Math.min(prev + 1, pagination.totalPages)
+                    )
+                  }
+                >
+                  <ChevronRight className=" w-3.5" />
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
