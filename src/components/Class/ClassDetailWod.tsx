@@ -39,9 +39,6 @@ const ClassDetailWod: FC<ClassDetailWodTypes> = ({ workouts }) => {
                       </Label>
                       <div className="flex ml-2 gap-x-2">
                         <Label className="text-sm text-gray-500">
-                          Sets: 
-                        </Label>
-                        <Label className="text-sm text-gray-500">
                           Time: {workout.duration} min
                         </Label>
                       </div>
@@ -70,11 +67,13 @@ const ClassDetailWod: FC<ClassDetailWodTypes> = ({ workouts }) => {
                           <GripVertical className="w-4 h-4 mr-2 text-gray-400 cursor-grab" />
                           <div className="flex gap-x-2">
                             <Label className="text-sm text-gray-500">
-                              {movement?.reps}{movement?.weightUnit}
+                              {movement?.reps}
+                              {movement?.weightUnit}
                             </Label>
                             <Label className="text-sm font-bold">
-                            {movement.movement.name}
+                              {movement.movement.name}
                             </Label>
+                            <p>{movement.movement.instructions}</p>
                           </div>
                         </Reorder.Item>
                       ))}

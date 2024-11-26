@@ -32,8 +32,6 @@ export enum RecurrenceType {
   CUSTOM = "CUSTOM",
 }
 
-
-
 export type Box = {
   id: string;
   name: string;
@@ -214,23 +212,25 @@ export interface Workout {
 }
 
 export enum WorkoutType {
-  AMRAP = 'AMRAP',
-  EMOM = 'EMOM',
-  FOR_TIME = 'FOR_TIME',
-  STRENGTH = 'STRENGTH',
-  STRETCHING = 'STRETCHING',
-  CARDIO = 'CARDIO',
+  AMRAP = "AMRAP",
+  EMOM = "EMOM",
+  FOR_TIME = "FOR_TIME",
+  STRENGTH = "STRENGTH",
+  STRETCHING = "STRETCHING",
+  CARDIO = "CARDIO",
 }
 
 export enum WorkoutIntensity {
-  LOW = 'LOW',
-  MODERATE = 'MODERATE',
-  HIGH = 'HIGH',
+  LOW = "LOW",
+  MODERATE = "MODERATE",
+  HIGH = "HIGH",
 }
 export interface Movement {
   id: string;
   name: string;
   category: MovementType;
+  instructions?: string;
+
   createdAt: string;
   updatedAt: string;
 }
@@ -246,7 +246,6 @@ export interface WorkoutMovement {
   updatedAt: string;
   movement: Movement; // Reference to Movement
 }
-
 
 export enum MovementType {
   CARDIO = "CARDIO",
