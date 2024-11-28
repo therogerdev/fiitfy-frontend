@@ -119,8 +119,6 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
     totalCount: 0,
   };
 
-  console.log(pagination);
-
   return (
     <div>
       <Input
@@ -172,7 +170,10 @@ const SearchAthlete = ({ classId }: SearchAthleteProps) => {
                 </span>
                 <Button
                   size="sm"
-                  disabled={pagination.currentPage === pagination.totalPages || isFetching}
+                  disabled={
+                    pagination.currentPage === pagination.totalPages ||
+                    isFetching
+                  }
                   onClick={() =>
                     setCurrentPage((prev) =>
                       Math.min(prev + 1, pagination.totalPages)

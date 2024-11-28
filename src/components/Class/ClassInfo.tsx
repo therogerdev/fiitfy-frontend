@@ -5,26 +5,26 @@ import { format } from "date-fns";
 import { Copy } from "lucide-react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import { Class } from "@/types";
+
+type ClassInfoType = Pick<
+  Class,
+  "id" | "description" | "date" | "duration" | "date" | "name"
+> & { time: Date };
 
 export const ClassInfo = ({
   description,
   date,
   id,
   duration,
-}: {
-  id: string;
-  className: string;
-  description: string;
-  date: string;
-  time: string;
-  duration: string;
-}) => {
+  name
+}: ClassInfoType) => {
   const { copyToClipboard } = useCopyToClipboard();
 
   return (
     <Card className="border-b border-l-0 border-r-0 rounded-none">
       <CardHeader>
-        <CardTitle>Class Information</CardTitle>
+        <CardTitle>{name}</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 gap-y-5 ">
         <div className="grid items-center w-full grid-cols-4 gap-4 ">

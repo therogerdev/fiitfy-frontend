@@ -134,9 +134,11 @@ export interface Class {
   name: string;
   description?: string;
   classType?: ClassType;
-  capacity?: number;
+  capacity: number;
   coachId?: string;
   coach?: Athlete;
+  duration: number;
+  workouts: Workout[]
   enrollments: ClassEnrollment[];
   activeEnrollments: number;
   isRecurring: boolean;
@@ -164,17 +166,18 @@ export interface Performance {
   id: string;
   athleteId: string;
   movementId: string;
-  workoutId?: string;
-  date: string;
-  sets?: number;
-  reps?: number;
-  weight?: number;
+  movement?: Movement;
+  athlete?: Athlete;
+  workoutId?: string | null; // Optional
+  classId?: string | null;   // Optional
+  date: string;              // ISO date string
+  sets?: string;
+  reps?: string;
+  weight?: string;
   weightUnit?: string;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
-  movement: Movement; // Reference to Movement
-  workout?: Workout; // Reference to Workout (optional)
+  notes?: string | null;
+  createdAt: string;         // ISO date string
+  updatedAt: string;         // ISO date string
 }
 
 export interface Programs {
@@ -244,6 +247,7 @@ export interface WorkoutMovement {
   weightUnit?: string;
   createdAt: string;
   updatedAt: string;
+  instructions: string;
   movement: Movement; // Reference to Movement
 }
 
@@ -282,6 +286,16 @@ export interface ClassResponse {
   type: "class";
   total: number;
   data: Class[];
+  meta: {
+    timestamp: string;
+  };
+}
+
+export interface ClassDetailResponse {
+  success: boolean;
+  type: "class";
+  total: number;
+  data: Class;
   meta: {
     timestamp: string;
   };
@@ -346,11 +360,15 @@ export interface PerformanceResponse {
   success: boolean;
   type: "performance";
   total: number;
-  data: Array<{
-    attributes: Performance;
-  }>;
+  data: Performance[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalCount: number;
+    rowsPerPage: number;
+  };
   meta: {
-    timestamp: string;
+    timestamp: string; // ISO date string
   };
 }
 

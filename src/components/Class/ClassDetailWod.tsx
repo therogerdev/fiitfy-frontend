@@ -1,17 +1,47 @@
-import { Workout } from "@/types";
-import { FC, useState } from "react";
+import { Movement, Workout, WorkoutMovement } from "@/types";
+import { Reorder } from "framer-motion";
+import { atom, useSetAtom } from "jotai";
+import { GripVertical } from "lucide-react";
+import { FC, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
-import { Reorder } from "framer-motion";
-import { GripVertical } from "lucide-react";
+
+export const classMovementsListAtom = atom<ClassMovementsListType[] | null>(
+  null
+);
 
 interface ClassDetailWodTypes {
-  workouts: Workout[];
+  workouts?: Workout[];
 }
+
+export type ClassMovementsListType = {
+  movementId: string;
+  name: string;
+  category: Movement["category"];
+};
+
+const getClassMovements = (workouts: Workout[]): ClassMovementsListType[] => {
+  return workouts.reduce<ClassMovementsListType[]>((acc, workout) => {
+    workout.movements.forEach((movement: WorkoutMovement) => {
+      acc.push({
+        movementId: movement.movement.id,
+        name: movement.movement.name,
+        category: movement.movement.category,
+      });
+    });
+    return acc;
+  }, []);
+};
 
 const ClassDetailWod: FC<ClassDetailWodTypes> = ({ workouts }) => {
   const [workoutList, setWorkoutList] = useState(workouts);
-  console.log("workouts", workouts);
+  const setMovements = useSetAtom(classMovementsListAtom);
+
+  useEffect(() => {
+    const allMovements = getClassMovements(workouts as Workout[]);
+    setMovements(allMovements);
+  }, [workouts, setMovements]);
+
   return (
     <div className="flex-1 h-full bg-white">
       <Card className="border-none rounded-none">
@@ -21,11 +51,11 @@ const ClassDetailWod: FC<ClassDetailWodTypes> = ({ workouts }) => {
         <CardContent>
           <Reorder.Group
             axis="y"
-            values={workoutList}
+            values={workoutList as Workout[]}
             onReorder={setWorkoutList}
             className="space-y-4"
           >
-            {workoutList.map((workout) => {
+            {workoutList?.map((workout) => {
               return (
                 <Reorder.Item
                   key={workout.id}
@@ -39,6 +69,11 @@ const ClassDetailWod: FC<ClassDetailWodTypes> = ({ workouts }) => {
                       </Label>
                       <div className="flex ml-2 gap-x-2">
                         <Label className="text-sm text-gray-500">
+                          {workout.type}
+                        </Label>
+                      </div>
+                      <div className="flex ml-2 gap-x-2">
+                        <Label className="text-sm text-gray-500">
                           Time: {workout.duration} min
                         </Label>
                       </div>
@@ -49,7 +84,7 @@ const ClassDetailWod: FC<ClassDetailWodTypes> = ({ workouts }) => {
                       values={workout.movements}
                       onReorder={(newMovements) =>
                         setWorkoutList((prev) =>
-                          prev.map((w) =>
+                          prev?.map((w) =>
                             w.id === workout.id
                               ? { ...w, movements: newMovements }
                               : w
@@ -58,25 +93,34 @@ const ClassDetailWod: FC<ClassDetailWodTypes> = ({ workouts }) => {
                       }
                       className="mt-4 space-y-2"
                     >
-                      {workout.movements?.map((movement) => (
-                        <Reorder.Item
-                          key={movement.id}
-                          value={movement}
-                          className="flex items-center p-2 bg-gray-100 rounded-lg shadow-sm"
-                        >
-                          <GripVertical className="w-4 h-4 mr-2 text-gray-400 cursor-grab" />
-                          <div className="flex gap-x-2">
-                            <Label className="text-sm text-gray-500">
-                              {movement?.reps}
-                              {movement?.weightUnit}
-                            </Label>
-                            <Label className="text-sm font-bold">
-                              {movement.movement.name}
-                            </Label>
-                            <p>{movement.movement.instructions}</p>
-                          </div>
-                        </Reorder.Item>
-                      ))}
+                      {workout.movements?.map((movement) => {
+                        return (
+                          <Reorder.Item
+                            key={movement.id}
+                            value={movement}
+                            className="flex items-center p-2 rounded-lg shadow-sm"
+                          >
+                            <GripVertical className="w-4 h-4 mr-2 text-gray-400 cursor-grab" />
+                            <div className="flex items-center justify-between w-full gap-x-4">
+                              <div className="flex gap-x-2">
+                                <Label className="text-sm text-gray-500">
+                                  {movement?.reps}x
+                                </Label>
+                                <Label className="text-sm font-bold">
+                                  {movement.movement.name}
+                                </Label>
+                                <Label className="text-sm text-gray-500">
+                                  {movement.weight && "@"} {movement.weight}
+                                </Label>
+                              </div>
+
+                              <p className="max-w-sm text-left truncate">
+                                {movement.instructions}
+                              </p>
+                            </div>
+                          </Reorder.Item>
+                        );
+                      })}
                     </Reorder.Group>
                   </div>
                 </Reorder.Item>

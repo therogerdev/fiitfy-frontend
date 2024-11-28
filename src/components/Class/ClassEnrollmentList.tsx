@@ -22,8 +22,10 @@ import {
   ClassEnrollmentStatus,
   Role,
 } from "@/types";
+import { atom, useAtom } from "jotai";
 import { CircleSlash2, MapPinCheckInside, XIcon } from "lucide-react";
 import { useState } from "react";
+import AddPerformance from "../Performance/AddPerformance";
 import { ScrollArea } from "../ui/scroll-area";
 import {
   Tooltip,
@@ -37,6 +39,8 @@ interface EnrollmentListProps {
   classId: string;
 }
 
+export const openModalAtom = atom(false);
+
 const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
   enrollments,
   classId,
@@ -47,6 +51,8 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
     useCheckIn(classId);
   const { mutate: cancelEnrollment } = useCancelEnrollment(classId);
   const { mutate: attendanceMutation } = useEnrollmentAttendance();
+  const [openAddPerformanceModal, setOpenAddPerformanceModal] =
+    useAtom(openModalAtom);
 
   const isAdmin = user?.role === Role.ADMIN;
 
@@ -93,7 +99,6 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
   const handleStatusChange = (id: string, status: AttendanceStatus) => {
     attendanceMutation({ enrollmentId: id, status });
   };
-  
 
   return (
     <Tabs
@@ -225,28 +230,53 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                               </TooltipProvider>
                             )}
                             {canCheckOut && (
-                              <TooltipProvider>
-                                <Tooltip delayDuration={0}>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      size="xs"
-                                      onClick={() =>
-                                        cancelCheckIn(enrollment.id)
-                                      }
-                                      disabled={
-                                        cancelCheckInLoading ||
-                                        enrollment.status ===
-                                          ClassEnrollmentStatus.CANCELED
-                                      }
-                                    >
-                                      <XIcon className="w-3.5" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Cancel Check-in</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
+                              <>
+                                {openAddPerformanceModal && (
+                                  <AddPerformance
+                                    athleteId={enrollment.athleteId}
+                                  />
+                                )}
+                                <Button
+                                  // onClick={() =>
+                                  //   handleAddPerformance(
+                                  //     enrollment.athleteId,
+                                  //     classId
+                                  //   )
+                                  // }
+                                  onClick={() => {
+                                    alert(enrollment.athleteId);
+                                    setOpenAddPerformanceModal(
+                                      !openAddPerformanceModal
+                                    );
+                                  }}
+                                  className="my-2"
+                                  variant={"outline"}
+                                >
+                                  Add P
+                                </Button>
+                                <TooltipProvider>
+                                  <Tooltip delayDuration={0}>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        size="xs"
+                                        onClick={() =>
+                                          cancelCheckIn(enrollment.id)
+                                        }
+                                        disabled={
+                                          cancelCheckInLoading ||
+                                          enrollment.status ===
+                                            ClassEnrollmentStatus.CANCELED
+                                        }
+                                      >
+                                        <XIcon className="w-3.5" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Cancel Check-in</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </>
                             )}
                             {canCancel && (
                               <TooltipProvider>
@@ -309,7 +339,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                         <>
                           <TableRow key={enrollment.id}>
                             {/* Athlete Info */}
-                             <TableCell className="p-0">
+                            <TableCell className="p-0">
                               <div className="flex items-center gap-2">
                                 <Avatar className="hidden p-1 rounded-full xl:block">
                                   <AvatarImage
@@ -330,7 +360,7 @@ const ClassEnrollmentList: React.FC<EnrollmentListProps> = ({
                             </TableCell>
 
                             {/* Actions */}
-                             <TableCell className="p-0">
+                            <TableCell className="p-0">
                               <div className="flex items-center gap-2">
                                 {canCancel && (
                                   <TooltipProvider>
