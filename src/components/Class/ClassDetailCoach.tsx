@@ -8,7 +8,7 @@ import { Card, CardContent } from "../ui/card";
 import { getInitials } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
-export const ClassDetailCoach = ({ coachId }: { coachId: string }) => {
+export const ClassDetailCoach = ({ coachId }: { coachId?: string }) => {
   const {
     data: coach,
     error,

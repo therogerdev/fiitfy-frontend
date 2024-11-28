@@ -31,7 +31,9 @@ const fetchEnrollment = async ({
   status?: string;
 }): Promise<ClassEnrollmentResponse> => {
   const response = await apiClient.get(
-    `${EndpointType.Enroll}/${classId}/list?status_not=${status?.toUpperCase() || ""}`
+    `${EndpointType.Enroll}/${classId}/list?status_not=${
+      status?.toUpperCase() || ""
+    }`
   );
   return response.data;
 };
@@ -60,7 +62,6 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: Something went wrong!</div>;
-
 
   return (
     <Card className="h-full border-none rounded-none">
@@ -92,10 +93,7 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
         {enrollment?.data?.length === 0 ? (
           <Label>No enrollments for this class</Label>
         ) : (
-          <ClassEnrollmentList
-            classId={classId}
-            enrollments={enrollment?.data || []}
-          />
+          <ClassEnrollmentList enrollments={enrollment?.data || []} />
         )}
       </CardContent>
     </Card>
