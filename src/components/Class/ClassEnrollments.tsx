@@ -17,7 +17,7 @@ import { useMemo } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { ClassEnrollAthlete } from "./ClassEnrollAthlete";
-import ClassEnrollmentListRefactored from "./ClassEnrollmentListRefactored";
+import ClassEnrollmentList from "./ClassEnrollmentList";
 interface ClassEnrollmentsProps {
   classId: string;
   capacity?: number;
@@ -93,7 +93,7 @@ export const ClassEnrollments: React.FC<ClassEnrollmentsProps> = ({
         {enrollment?.data?.length === 0 ? (
           <Label>No enrollments for this class</Label>
         ) : (
-          <ClassEnrollmentListRefactored enrollments={enrollment?.data || []} />
+          <ClassEnrollmentList enrollments={enrollment?.data || []} />
         )}
       </CardContent>
     </Card>

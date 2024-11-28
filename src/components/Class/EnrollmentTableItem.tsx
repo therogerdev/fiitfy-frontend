@@ -31,7 +31,7 @@ import { useSetAtom } from "jotai";
 import {
   addPerformanceSelectedAtom,
   openPerformanceModal,
-} from "./ClassEnrollmentListRefactored";
+} from "./ClassEnrollmentList";
 
 const EnrollmentTableItem = ({
   enrollment,

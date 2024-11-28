@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useAddPerformance } from "@/hooks/useAddPerformance";
 import { useParams } from "react-router";
 import { classMovementsListAtom } from "../Class/ClassDetailWod";
-import { openPerformanceModal } from "../Class/ClassEnrollmentListRefactored";
+import { openPerformanceModal } from "../Class/ClassEnrollmentList";
 import { Input } from "../ui/input";
 import Modal from "../ui/modal";
 
