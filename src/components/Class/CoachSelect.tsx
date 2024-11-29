@@ -19,9 +19,10 @@ import {
 } from '@/components/ui/popover';
 import { apiClient } from '@/config/axios.config';
 import { Athlete, AthleteResponse } from '@/types';
+import { EndpointType } from '@/types/api';
 
 const fetchCoaches = async (): Promise<AthleteResponse> => {
-  const response = await apiClient.get('/athlete/list?isCoach=true');
+  const response = await apiClient.get(`/${EndpointType.Athlete}/list?page=1&limit=10&isCoach=true`);
   return response.data
 };
 

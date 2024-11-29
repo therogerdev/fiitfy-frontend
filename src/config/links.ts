@@ -3,7 +3,7 @@ export const appLink = {
   programs: { label: 'Programs', href: '/programs' },
   createPrograms: { label: 'Create Program', href: '/programs/new' },
   classes: (label?: string) => ({
-    label: label || 'Class',
+    label: label || 'Schedule',
     href: '/class',
   }),
   createClass: { label: 'Create Class', href: '/class/create' },
