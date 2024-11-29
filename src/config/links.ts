@@ -1,6 +1,7 @@
 export const appLink = {
   dashboard: { label: 'Dashboard', href: '/dashboard' },
   programs: { label: 'Programs', href: '/programs' },
+  workout: { label: 'Workout', href: '/workout' },
   createPrograms: { label: 'Create Program', href: '/programs/new' },
   classes: (label?: string) => ({
     label: label || 'Schedule',
