@@ -4,6 +4,7 @@ import WorkoutActions from "@/components/Workouts/WorkoutActions";
 
 import WorkoutList from "@/components/Workouts/WorkoutList";
 import { appLink } from "@/config/links";
+import { Outlet } from "react-router";
 
 const breadcrumbLinks = [appLink.workout];
 
@@ -13,6 +14,7 @@ const WorkoutPage = () => {
       <BreadcrumbComponent links={breadcrumbLinks} />
       <WorkoutActions />
       <WorkoutList />
+      <Outlet />
     </ContentLayout>
   );
 };

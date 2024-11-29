@@ -44,6 +44,7 @@ const ProgramAdd = () => {
       toast({
         title: 'Success',
         description: `${data.attributes.name} program has been created!`,
+        variant: "success"
       });
 
       navigate(`/programs`);
@@ -68,8 +69,8 @@ const ProgramAdd = () => {
     // Add the missing fields to the form data
     const newProgram: Program = {
       ...data,
-      id: '', // You might generate this or let the backend handle it
-      createdAt: new Date(), // Add the current date as the createdAt
+      id: '', 
+      createdAt: new Date(), 
       attributes: {
         name: data.name,
         description: data.description,
@@ -77,7 +78,6 @@ const ProgramAdd = () => {
         numClassesPerWeek: data.numClassesPerWeek,
         slug: data.slug,
         active: data.active,
-        // Add any other attribute fields your Program type requires
       },
     };
     mutate(newProgram);
@@ -90,7 +90,6 @@ const ProgramAdd = () => {
 
   return (
     <Sheet defaultOpen>
-      {/* <SheetTrigger>Open Program Details</SheetTrigger> */}
       <SheetContent size='lg'>
         <BreadcrumbComponent links={breadcrumbLinks} />
         <main className='grid items-start flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>

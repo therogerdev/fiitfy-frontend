@@ -1,34 +1,35 @@
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { useWorkoutList } from "@/hooks/useListWorkouts";
 import { Badge } from "@ui/badge";
 
 import { DropdownMenuItem } from "@ui/dropdown-menu";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@ui/table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
 import { Fragment } from "react";
+import { Link } from "react-router-dom";
 
 const WorkoutList = () => {
   const { workouts, error, isLoading, pagination } = useWorkoutList();
@@ -68,7 +69,9 @@ const WorkoutList = () => {
             {workouts?.data.map((workout) => (
               <Fragment key={workout.id}>
                 <TableRow>
-                  <TableCell className="font-medium">{workout.title}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link to="/workout/create">{workout.title}</Link>
+                  </TableCell>
                   <TableCell className="max-w-[400px] truncate">
                     {workout.type}
                   </TableCell>

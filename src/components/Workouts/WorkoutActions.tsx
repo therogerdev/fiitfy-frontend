@@ -7,9 +7,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { EndpointType } from "@/types/api";
 import { File, ListFilter, PlusCircle } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const WorkoutActions = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex w-full my-2">
       <div className="flex items-center gap-2 ml-auto">
@@ -36,7 +39,11 @@ const WorkoutActions = () => {
             Export
           </span>
         </Button>
-        <Button size="sm" className="gap-1 h-7">
+        <Button
+          size="sm"
+          className="gap-1 h-7"
+          onClick={() => navigate(`/${EndpointType.Workout}/create`)}
+        >
           <PlusCircle className="h-3.5 w-3.5" />
           <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
             Add Workout
