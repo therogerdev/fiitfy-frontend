@@ -217,7 +217,7 @@ export interface Workout {
 export enum WorkoutType {
   AMRAP = "AMRAP",
   EMOM = "EMOM",
-  FOR_TIME = "FOR_TIME",
+  FOR_TIME = "ForTime",
   STRENGTH = "STRENGTH",
   STRETCHING = "STRETCHING",
   CARDIO = "CARDIO",
@@ -384,17 +384,33 @@ export interface ProgramsResponse {
   };
 }
 
+export interface WorkoutResponsePagination {
+  success: boolean;
+  type: "workout";
+  total: number;
+  data: Workout[]; // Array of workouts
+  pagination: Pagination;
+  meta: {
+    timestamp: string | Date; // ISO timestamp of the response
+  };
+}
+
 export interface WorkoutResponse {
   success: boolean;
   type: "workout";
   total: number;
-  data: Array<{
-    attributes: Workout;
-  }>;
+  data: Workout;
   meta: {
-    timestamp: string;
+    timestamp: string | Date; // ISO timestamp of the response
   };
 }
+
+export type Pagination =  {
+  currentPage: number; // Current page of the pagination
+  totalPages: number; // Total number of pages
+  rowsPerPage: number; // Number of rows per page
+  totalCount: number; // Total number of workouts
+};
 
 export interface MovementResponse {
   success: boolean;

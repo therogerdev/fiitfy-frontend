@@ -69,6 +69,17 @@ const Navbar = () => {
       >
         {appLink.programs.label}
       </Link>
+      <Link
+        to={appLink.workout.href}
+        className={cn(
+          "transition-colors hover:text-foreground/80",
+          pathname.startsWith(appLink.workout.href)
+            ? "text-foreground"
+            : "text-foreground/60"
+        )}
+      >
+        {appLink.workout.label}
+      </Link>
     </nav>
   );
 };

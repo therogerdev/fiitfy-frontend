@@ -1,4 +1,4 @@
-'use client';
+
 import { Button } from '@/components/ui/button';
 import { File, ListFilter, PlusCircle } from 'lucide-react';
 import {
