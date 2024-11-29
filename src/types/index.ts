@@ -384,15 +384,19 @@ export interface ProgramsResponse {
   };
 }
 
-export interface WorkoutResponse {
+export interface WorkoutResponsePagination {
   success: boolean;
   type: "workout";
   total: number;
-  data: Array<{
-    attributes: Workout;
-  }>;
+  data: Workout[]; // Array of workouts
+  pagination: {
+    currentPage: number; // Current page of the pagination
+    totalPages: number; // Total number of pages
+    rowsPerPage: number; // Number of rows per page
+    totalCount: number; // Total number of workouts
+  };
   meta: {
-    timestamp: string;
+    timestamp: string; // ISO timestamp of the response
   };
 }
 

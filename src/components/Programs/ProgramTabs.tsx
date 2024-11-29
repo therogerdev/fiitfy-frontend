@@ -54,7 +54,9 @@ const ProgramTabs = () => {
                 <ProgramDetailPage />
               </> // Render quick view component
             ) : (
+              <>
               <ProgramList />
+              </>
               // Render full programs component
             )}
           </CardContent>
