@@ -20,6 +20,7 @@ import ProgramDetailPage from "./pages/ProgramDetailPage";
 import RecoverPasswordPage from "./pages/RecoverPasswordPage";
 import AthletePlans from "./components/Athletes/AthletePlans";
 import { Role } from "./types";
+import WorkoutPage from "./pages/WorkoutPage";
 
 const AppRoutes = () => {
   return (
@@ -36,6 +37,14 @@ const AppRoutes = () => {
         />
         <Route path="/" element={<Navigate to={appLink.dashboard.href} />} />
 
+        <Route
+          path={appLink.workout.href}
+          element={
+            <ProtectedRoute>
+              <WorkoutPage />
+            </ProtectedRoute>
+          }
+        ></Route>
         <Route
           path={appLink.programs.href}
           element={
