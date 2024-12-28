@@ -3,17 +3,13 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { droppedSectionsAtom, sectionsAtom } from "@/store/workout";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
-import {
-    arrayMove,
-    SortableContext,
-    verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import { useAtom } from "jotai";
 import { GripVertical, HardDriveUpload, PlusIcon } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, } from "lucide-react"; 
+import { Movement } from "@/types";
+import { AlertCircle, } from "lucide-react";
 
 const DroppableArea: React.FC = () => {
     const [droppedSections] = useAtom(droppedSectionsAtom);
@@ -54,7 +50,7 @@ const DroppableArea: React.FC = () => {
                                     <div className="flex flex-col space-y-1">
                                         <Label className="font-medium">{section.name}</Label>
                                         <ul className="space-y-1">
-                                            {section?.movements?.map((movement) => (
+                                            {section?.movements?.map((movement: Movement) => (
                                                 <li
                                                     key={movement.id}
                                                     className="text-sm text-gray-600 flex items-center"
@@ -83,25 +79,55 @@ const WorkoutBuilderArea: React.FC = () => {
     const [sections, setSections] = useAtom(sectionsAtom);
     const [droppedSections, setDroppedSections] = useAtom(droppedSectionsAtom);
 
+    // const handleDragEnd = (event: any) => {
+    //     const { active, over } = event;
+
+    //     if (!over) return;
+
+    //     if (over.id === "droppable-area") {
+    //         // Handle drop into the Droppable Area
+    //         const draggedSection = sections.find((s) => s.id === active.id);
+    //         if (draggedSection) {
+    //             setDroppedSections((prev) => [...prev, draggedSection]);
+    //             setSections((prev) =>
+    //                 prev.filter((section) => section.id !== draggedSection.id)
+    //             );
+    //         }
+    //     } else if (active.id !== over.id) {
+    //         // Reorder sections within the Sortable List
+    //         const oldIndex = sections.findIndex((section) => section.id === active.id);
+    //         const newIndex = sections.findIndex((section) => section.id === over.id);
+    //         setSections(arrayMove(sections, oldIndex, newIndex));
+    //     }
+    // };
+
     const handleDragEnd = (event: any) => {
         const { active, over } = event;
 
         if (!over) return;
 
-        if (over.id === "droppable-area") {
-            // Handle drop into the Droppable Area
-            const draggedSection = sections.find((s) => s.id === active.id);
-            if (draggedSection) {
-                setDroppedSections((prev) => [...prev, draggedSection]);
-                setSections((prev) =>
-                    prev.filter((section) => section.id !== draggedSection.id)
+        const activeType = active.data.current?.type;
+
+        if (activeType === "movement") {
+            // Check if dropped on a section
+            if (over.id.startsWith("droppable-section-")) {
+                const sectionId = over.id.replace("droppable-section-", "");
+                const draggedMovement = active.data.current.movement;
+
+                console.log("Section ID:", sectionId);
+                console.log("Dragged Movement:", draggedMovement);
+
+                setSections((prevSections) =>
+                    prevSections.map((section) =>
+                        section.id === sectionId
+                            ? {
+                                ...section,
+                                movements: [...section.movements, draggedMovement],
+                            }
+                            : section
+                    )
                 );
             }
-        } else if (active.id !== over.id) {
-            // Reorder sections within the Sortable List
-            const oldIndex = sections.findIndex((section) => section.id === active.id);
-            const newIndex = sections.findIndex((section) => section.id === over.id);
-            setSections(arrayMove(sections, oldIndex, newIndex));
         }
     };
 
@@ -130,16 +156,26 @@ const WorkoutBuilderArea: React.FC = () => {
 
             <div className="flex space-x-4">
                 <ScrollArea className="flex-grow border rounded-lg">
-                    <DndContext onDragEnd={handleDragEnd}>
-                        <SortableContext
-                            items={sections?.map((section) => section.id)}
-                            strategy={verticalListSortingStrategy}
-                        >
-                            {sections?.map((section) => (
-                                <SortableSectionCard key={section.id} section={section} />
-                            ))}
-                        </SortableContext>
-                    </DndContext>
+
+                    {sections.map((section) => (
+                        <SectionCard
+                            key={section.id}
+                            section={section}
+                        // onMovementDrop={(movement, sectionId) => {
+                        //     setSections((prevSections) =>
+                        //         prevSections.map((sec) =>
+                        //             sec.id === sectionId
+                        //                 ? {
+                        //                     ...sec,
+                        //                     movements: [...sec.movements, movement],
+                        //                 }
+                        //                 : sec
+                        //         )
+                        //     );
+                        // }}
+                        />
+                    ))}
+
                 </ScrollArea>
 
             </div>
@@ -148,35 +184,37 @@ const WorkoutBuilderArea: React.FC = () => {
     );
 };
 
-const SortableSectionCard = ({
+
+export default WorkoutBuilderArea;
+
+
+// section card with component name and list of movements
+const SectionCard = ({
     section,
     onMovementDrop,
 }: {
     section: any;
-    onMovementDrop: (movement: any, sectionId: string) => void;
+    onMovementDrop?: (movement: Movement, sectionId: string) => void;
 }) => {
-    const { attributes, listeners, setNodeRef: setDragNodeRef, transform, transition } =
-        useDraggable({ id: section.id });
 
-    const { setNodeRef: setDropNodeRef, isOver } = useDroppable({
-        id: `droppable-movement-${section.id}`,
-    });
+
+    const { setNodeRef:setDropNodeRef, isOver } = useDroppable({
+        id: `droppable-section-${section.id}`, // Unique ID for each Section
+      });
 
     const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        border: isOver ? "2px dashed #4ade80" : "1px solid #e5e7eb",
+        border: isOver ? "2px dashed #4ade80" : "1px solid #e5e7eb", // Highlight the section when a movement is dragged over
+        backgroundColor: isOver ? "#f0fdf4" : "white",
     };
 
     return (
         <div
             ref={(node) => {
-                setDragNodeRef(node);
-                setDropNodeRef(node);
+
+                setDropNodeRef(node); // Droppable
             }}
             style={style}
-            {...attributes}
-            {...listeners}
+
             className="p-4 mb-4 border rounded-lg shadow-md bg-white"
         >
             <div className="flex items-center justify-between mb-2">
@@ -193,7 +231,7 @@ const SortableSectionCard = ({
                 </div>
             </div>
             <ul className="space-y-2">
-                {section?.movements?.map((movement: any) => (
+                {section?.movements?.map((movement: Movement) => (
                     <li
                         key={movement.id}
                         className="flex items-center justify-between p-2 border rounded-md"
@@ -205,6 +243,3 @@ const SortableSectionCard = ({
         </div>
     );
 };
-
-export default WorkoutBuilderArea;
-

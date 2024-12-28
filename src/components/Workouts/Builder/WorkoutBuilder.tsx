@@ -36,9 +36,10 @@ export const WorkoutBuilderLayout = ({
 }) => {
   const [droppedSections, setDroppedSections] = useAtom(droppedSectionsAtom);
   const [sections, setSections] = useAtom(sectionsAtom);
+
+
+
   const handleDragEnd = (event: any) => {
-
-
     if (!event.over) return;
     if (event.over.id === "droppable-area" && event.active.data.current.type === "section") {
       const droppedSection = event.active.data.current.section;
@@ -48,8 +49,29 @@ export const WorkoutBuilderLayout = ({
       setSections((prev) => [...prev, droppedSection]);
 
 
+
+
+    } else {
+      const movementDropped = event.active.data.current.movement;
+      // You can further handle movement drop here.
+      console.log("Dropped Movement:", movementDropped);
+      setSections((prev) =>
+        prev.map((section) => {
+          console.log("section.id", event.over.id)
+          if (`droppable-section-${section.id}` === event.over.id) {
+            return {
+              ...section,
+              movements: [...section.movements, { id: movementDropped.id, name: movementDropped.name, category: movementDropped.category }],
+            };
+          }
+          return section;
+        })
+      );
+
     }
   };
+
+  console.log("sections at the moment...", sections)
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="grid h-full col-span-1 overflow-hidden md:grid-cols-2 lg:grid-cols-12">
@@ -156,6 +178,7 @@ const DraggableMovementItem = ({ movement }: { movement: Movement }) => {
       movement,
     },
   });
+
 
   return (
     <CommandItem
