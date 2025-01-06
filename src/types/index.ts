@@ -416,9 +416,7 @@ export interface MovementResponse {
   success: boolean;
   type: "movement";
   total: number;
-  data: Array<{
-    attributes: Movement;
-  }>;
+  data: Movement[];
   meta: {
     timestamp: string;
   };

@@ -3,6 +3,7 @@ export const appLink = {
   programs: { label: "Programs", href: "/programs" },
   workout: { label: "Workout", href: "/workout" },
   createWorkout: { label: "Create Workout", href: "/workout/create" },
+  workoutBuilder: { label: "Workout Builder", href: "/workout-builder" },
   createPrograms: { label: "Create Program", href: "/programs/new" },
   classes: (label?: string) => ({
     label: label || "Schedule",

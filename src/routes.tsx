@@ -22,6 +22,7 @@ import AthletePlans from "./components/Athletes/AthletePlans";
 import { Role } from "./types";
 import WorkoutPage from "./pages/WorkoutPage";
 import WorkoutCreate from "./components/Workouts/WorkoutCreate";
+import WorkoutBuilder from "./components/Workouts/Builder/WorkoutBuilder";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,12 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <DashboardPage />
             </ProtectedRoute>
+          }
+        />
+         <Route
+          path={appLink.workoutBuilder.href}
+          element={
+            <WorkoutBuilder />
           }
         />
         <Route path="/" element={<Navigate to={appLink.dashboard.href} />} />
