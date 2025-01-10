@@ -1,18 +1,26 @@
-
 import { WorkoutMovement } from "@/types";
+import { Trash2Icon } from "lucide-react";
 import React, { memo } from "react";
 
 interface WorkoutMovementWithName extends WorkoutMovement {
     name?: string;
 }
 
-
 const MovementItem: React.FC<{
     movement: Partial<WorkoutMovementWithName>;
     onInputChange: (field: string, value: string | number) => void;
-}> = memo(({ movement, onInputChange }) => (
+    onRemove: () => void;
+}> = memo(({ movement, onInputChange, onRemove }) => (
     <li className="flex flex-col p-2 border rounded-md space-y-2">
-        <span className="font-semibold text-sm">{movement.name}</span>
+        <div className="flex flex-row justify-between">
+            <span className="font-semibold text-sm">{movement.name}</span>
+            <span className="font-semibold text-sm">
+                <Trash2Icon
+                    className="w-4 h-4 cursor-pointer  stroke-red-600"
+                    onClick={onRemove}
+                />
+            </span>
+        </div>
         <div className="flex gap-4 items-center">
             <input
                 type="number"
