@@ -4,15 +4,21 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { DraggableMovementList } from "./DraggableMovementList";
 import { DraggableSectionsList } from "./DraggableSectionsList";
 
+
+interface DragDataType {
+  type: "section" | "movement";
+}
+
 const WorkoutBuilderLayout = ({ children }: { children: React.ReactNode }) => {
   const { handleSectionDragEnd } = useSectionDragAndDrop();
   const { handleMovementDragEnd } = useMovementDragAndDrop();
 
   const handleDragEnd = (event: DragEndEvent) => {
-    if (!event.active.data.current) return;
-    if (event.active.data.current?.type === "section") {
+    const data = event.active.data.current as DragDataType | undefined;
+    if (!data) return;
+    if (data.type === "section") {
       handleSectionDragEnd(event);
-    } else if (event.active.data.current?.type === "movement") {
+    } else if (data.type === "movement") {
       handleMovementDragEnd(event);
     }
   };

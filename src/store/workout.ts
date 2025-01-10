@@ -1,8 +1,9 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
-
-
-export const sectionsAtom = atom<{ id: string, name: string, movements: any[] }[] | []>([
-]);
+export const sectionsAtom = atomWithStorage<{ id: string; name: string; movements: any[] }[]>(
+  "sections",
+  []
+);
 
 export const droppedSectionsAtom = atom<any[]>([]);
