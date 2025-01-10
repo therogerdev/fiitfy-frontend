@@ -6,8 +6,9 @@ import { sectionsAtom } from "@/store/workout";
 import { useDroppable } from "@dnd-kit/core";
 import { useSetAtom } from "jotai";
 import { GripVertical, HardDriveUpload } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import MovementItem from "./MovementItem";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface WorkoutSectionCardProps {
     section: Section;
@@ -20,19 +21,21 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
 
     const isMovement = active?.data?.current?.type === "movement";
     const setSections = useSetAtom(sectionsAtom);
+    const [hideForm, setHideForm] = useState(false);
+
 
     const handleInputChange = (movementId: string, field: string, value: string | number) => {
         setSections((prevSections) =>
             prevSections.map((s) =>
                 s.id === section.id
                     ? {
-                          ...s,
-                          movements: s.movements.map((movement) =>
-                              movement.id === movementId
-                                  ? { ...movement, [field]: value }
-                                  : movement
-                          ),
-                      }
+                        ...s,
+                        movements: s.movements.map((movement) =>
+                            movement.id === movementId
+                                ? { ...movement, [field]: value }
+                                : movement
+                        ),
+                    }
                     : s
             )
         );
@@ -43,11 +46,11 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
             prevSections.map((s) =>
                 s.id === section.id
                     ? {
-                          ...s,
-                          movements: s.movements.filter(
-                              (movement) => movement.id !== movementId
-                          ),
-                      }
+                        ...s,
+                        movements: s.movements.filter(
+                            (movement) => movement.id !== movementId
+                        ),
+                    }
                     : s
             )
         );
@@ -68,9 +71,9 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
                 isOver={isOver}
                 isMovement={isMovement}
             />
-            <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                    <Button
+            <div className="flex items-center justify-between mb-2  ">
+                <div className="flex items-center justify-between gap-2 w-full">
+                    <div><Button
                         size="icon"
                         variant="ghost"
                         className="cursor-grab"
@@ -78,7 +81,16 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
                     >
                         <GripVertical className="w-4 h-4" />
                     </Button>
-                    <Label className="text-base font-semibold">{section.name}</Label>
+                        <Label className="text-base font-semibold">{section.name}</Label></div>
+                    {section.movements.length > 0 && (
+                        <div>
+                            <Checkbox
+                                className="mr-2"
+                                onCheckedChange={(checked) => setHideForm(!checked)} 
+                            />
+                            <span className="text-sm">Add instructions</span>
+                        </div>
+                    )}
                 </div>
             </div>
             <ul className="space-y-2">
@@ -95,10 +107,11 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
                     <MovementItem
                         key={movement.id}
                         movement={movement}
+                        hideForm={hideForm} 
                         onInputChange={(field, value) =>
                             handleInputChange(movement.id, field, value)
                         }
-                        onRemove={() => handleRemoveMovement(movement.id)} // Pass the onRemove handler
+                        onRemove={() => handleRemoveMovement(movement.id)} 
                     />
                 ))}
             </ul>
@@ -121,9 +134,8 @@ const WorkoutSectionCardOverlay = ({
         <>
             {section.movements.length > 0 && isOver && (
                 <div
-                    className={`absolute bg-gray-300 ${
-                        isMovement ? "cursor-grabbing" : "cursor-not-allowed"
-                    } inset-y-0 inset-x-0 flex items-center justify-center opacity-50`}
+                    className={`absolute bg-gray-300 ${isMovement ? "cursor-grabbing" : "cursor-not-allowed"
+                        } inset-y-0 inset-x-0 flex items-center justify-center opacity-50`}
                 >
                     <div className="rounded-md flex justify-center items-center flex-col p-5 border border-dashed">
                         <HardDriveUpload className="w-8 h-8 text-black" />
