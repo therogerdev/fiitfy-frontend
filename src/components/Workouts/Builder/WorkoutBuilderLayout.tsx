@@ -32,8 +32,8 @@ const WorkoutBuilderLayout = ({ children }: { children: React.ReactNode }) => {
             <DraggableMovementList />
           </div>
         </div>
-        <div className="border-r lg:col-span-9">
-          <div className="flex flex-col h-full">{children}</div>
+        <div className="border-r lg:col-span-9 ">
+          <div className="flex flex-col">{children}</div>
         </div>
       </div>
     </DndContext>
