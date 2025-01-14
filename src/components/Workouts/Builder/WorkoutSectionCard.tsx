@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { sectionsAtom } from "@/store/workout";
 import { useDroppable } from "@dnd-kit/core";
 import { useSetAtom } from "jotai";
-import { GripVertical, HardDriveUpload } from "lucide-react";
+import { GripVertical, HardDriveUpload, Trash2Icon } from "lucide-react";
 import React, { useState } from "react";
 import MovementItem from "./MovementItem";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -68,20 +68,6 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
       prevSections.filter((s) => s.id !== section.id)
     );
   };
-    const handleRemoveMovement = (movementId: string) => {
-        setSections((prevSections) =>
-            prevSections.map((s) =>
-                s.id === section.id
-                    ? {
-                        ...s,
-                        movements: s.movements.filter(
-                            (movement) => movement.id !== movementId
-                        ),
-                    }
-                    : s
-            )
-        );
-    };
 
   return (
     <div
