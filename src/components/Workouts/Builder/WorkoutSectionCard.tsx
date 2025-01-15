@@ -73,7 +73,7 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
     <div
       ref={setDropNodeRef}
       role="region"
-      aria-label={`Drop movements into section ${section.name}`}
+      aria-label={`Drop movements into section ${section.title}`}
       className={cn("relative p-4 mb-4 border rounded-lg shadow-md bg-white", {
         "bg-accent": isOver,
         "border-2 border-dashed": isOver,
@@ -95,7 +95,7 @@ const WorkoutSectionCard: React.FC<WorkoutSectionCardProps> = ({ section }) => {
             >
               <GripVertical className="w-4 h-4" />
             </Button>
-            <Label className="text-base font-semibold">{section.name}</Label>
+            <Label className="text-base font-semibold">{section.title                         }</Label>
           </div>
           <div className="flex gap-x-2">
             {section.movements.length > 0 && (

@@ -214,6 +214,9 @@ export interface Workout {
   movements: WorkoutMovement[]; // Related movements
 }
 
+export type WorkoutList = Workout[];
+
+
 export enum WorkoutType {
   AMRAP = "AMRAP",
   EMOM = "EMOM",
@@ -237,18 +240,50 @@ export interface Movement {
   createdAt: string;
   updatedAt: string;
 }
+
 export interface WorkoutMovement {
   id: string;
   workoutId: string;
   movementId: string;
+  instructions?: string;
+  order: number;
   reps?: number;
   sets?: number;
   weight?: number;
   weightUnit?: string;
   createdAt: string;
   updatedAt: string;
-  instructions: string;
-  movement: Movement; // Reference to Movement
+}
+
+export type WorkoutMovementList = WorkoutMovement[];
+
+export interface CreateWorkoutMovementPayload {
+  workoutId: string;
+  movementId: string;
+  instructions?: string;
+  order: number;
+  reps?: number;
+  sets?: number;
+  weight?: number;
+  weightUnit?: string;
+}
+
+export interface UpdateWorkoutMovementPayload {
+  id: string;
+  instructions?: string;
+  order?: number;
+  reps?: number;
+  sets?: number;
+  weight?: number;
+  weightUnit?: string;
+}
+
+export interface WorkoutMovementResponse {
+  data: WorkoutMovement;
+}
+
+export interface WorkoutMovementListResponse {
+  data: WorkoutMovementList;
 }
 
 export enum MovementType {

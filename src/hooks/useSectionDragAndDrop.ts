@@ -5,7 +5,7 @@ import { Movement } from "@/types";
 
 export interface Section {
     id: string;
-    name: string;
+    title: string;
     movements: Movement[];
   }
   

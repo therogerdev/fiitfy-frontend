@@ -22,7 +22,7 @@ export const useMovementDragAndDrop = () => {
               ...section.movements,
               {
                 id: movementDropped.id,
-                name: movementDropped.name,
+                title: movementDropped.name,
                 category: movementDropped.category,
               },
             ],

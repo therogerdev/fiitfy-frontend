@@ -48,7 +48,7 @@ const SectionDroppableArea: React.FC = () => {
                                     className="p-4 bg-white border rounded-lg shadow-sm"
                                 >
                                     <div className="flex flex-col space-y-1">
-                                        <Label className="font-medium">{section.name}</Label>
+                                        <Label className="font-medium">{section.title}</Label>
                                         <ul className="space-y-1">
                                             {section?.movements?.map((movement: Movement) => (
                                                 <li

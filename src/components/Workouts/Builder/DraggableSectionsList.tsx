@@ -14,9 +14,9 @@ import { GripVertical, PlusIcon } from "lucide-react";
 
 // array for Sections presets
 const sections = [
-    { id: 1, name: "Component 1 - Warming up", movements: [] },
-    { id: 2, name: "Component 2 - Skill/Strength", movements: [] },
-    { id: 3, name: "Component 3 - WOD", movements: [] },
+    { id: 1, title: "Component 1 - Warming up", movements: [] },
+    { id: 2, title: "Component 2 - Skill/Strength", movements: [] },
+    { id: 3, title: "Component 3 - WOD", movements: [] },
   ];
   
 
@@ -40,7 +40,7 @@ export const DraggableSectionsList = () => {
     );
   };
   
-  const DraggableSectionItem = ({ section }: { section: { id: any; name: string } }) => {
+  const DraggableSectionItem = ({ section }: { section: { id: any; title: string } }) => {
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
         id: section.id,
         data: {
@@ -60,7 +60,7 @@ export const DraggableSectionsList = () => {
             }`}
         >
             <PlusIcon className="w-3.5" />
-            <Label className="mx-1">{section.name}</Label>
+            <Label className="mx-1">{section.title}</Label>
             <GripVertical className="absolute right-2" />
         </CommandItem>
     );
